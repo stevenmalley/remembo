@@ -1,0 +1,14 @@
+.mainLabel {
+  display: inline-block;
+  width: 100px;
+  margin-right: 10px;
+  text-align: right;
+}
+
+.optionalLabel {
+  text-align: left;
+}
+
+.item {
+  margin-bottom: 20px;
+}

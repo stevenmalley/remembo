@@ -1,0 +1,19 @@
+NOT LOGGED IN
+any quizzes in localStorage loaded into Redux store
+own quizzes can be edited
+new/edited quizzes saved to Redux store and localStorage (new quizzes given local ids)
+
+
+LOGGED IN
+any quizzes in localStorage loaded into Redux store and saved to DB as private (quizzes with only local ids given real ids)
+own quizzes can be edited
+new/edited quizzes saved to Redux store and localStorage and automatically saved to DB as private
+option to publish quizzes (change from private to public)
+
+
+FUNCTIONS:
+create new quiz
+edit quiz
+publish quiz
+save quiz
+delete quiz

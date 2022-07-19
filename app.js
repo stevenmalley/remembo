@@ -10,6 +10,11 @@ app.use(bodyParser.json());
 const cors = require("cors");
 app.use(cors());
 
+const Pool = require('pg').Pool
+const pool = new Pool({connectionString: process.env.DB_CONNECTION_STRING});
+const db = require('./db')(pool);
+
+
 
 
 app.use(express.static("client/build"));
@@ -28,8 +33,16 @@ app.get("/api/hello",
 );
 
 app.get("/api/quizzes",
-  (req,res,next) => {
-    
+  async (req,res,next) => {
+    const quizzes = await db.getQuizzes();
+    res.status(200).send(quizzes);
+  }
+);
+
+app.get("/api/quiz/:quizID",
+  async (req,res,next) => {
+    const quiz = await db.getQuiz(req.params.quizID);
+    res.status(200).send(quiz);
   }
 );
 

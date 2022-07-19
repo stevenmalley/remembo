@@ -1,0 +1,83 @@
+#quiz {
+  background-color: rgb(0, 221, 203);
+  padding: 20px 0;
+  color: black;
+}
+
+.factWrapper {
+  background-color: white;
+  margin: 10px auto;
+  max-width: 500px;
+  color: black;
+  position: relative;
+  cursor: pointer;
+}
+
+.textWrapper {
+  width: 100%;
+  min-height: 50px;
+}
+
+.fact-info {
+  color: #777;
+}
+
+.fact-hint {
+  color: blue;
+}
+
+.hintButton {
+  min-height: 44px;
+  width: 18%;
+  position: absolute;
+  top: 0;
+  right: 0;
+  background: yellow;
+  font-size: 1.1em;
+  margin: 3px;
+  cursor: pointer;
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
+}
+
+.hintButton:hover {
+  background: rgb(255, 255, 144);
+}
+
+.hintButton:active {
+  background: purple;
+}
+
+.quizButton {
+  margin: 0 10px 10px;
+  padding: 10px 15px;
+  font-size: 1.1em;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  border-radius: 10px;
+}
+
+.irrelevantButton {
+  background: #555;
+}
+
+.allHintButton {
+  background: blue;
+}
+
+.allFactButton {
+  background: red;
+}
+
+.resetButton {
+  background: green;
+}
+
+.allHintButton:hover, .allFactButton:hover, .resetButton:hover {
+  color: gold;
+}
+
+.allHintButton:active, .allFactButton:active, .resetButton:active {
+  background: purple;
+}
