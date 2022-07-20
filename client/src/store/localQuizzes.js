@@ -5,10 +5,11 @@ const localQuizzes = createSlice({
   initialState: [],
   reducers: {
     addQuiz:(slice,action)=>{slice.push(action.payload)},
-    modifyQuiz:(slice,action)=>{slice[action.payload.index] = action.payload.quiz}
+    modifyQuiz:(slice,action)=>{slice[action.payload.index] = action.payload.quiz},
+    deleteQuiz:(slice,action)=>{slice.splice(action.payload,1)}
   }
 });
 
 export function selectLocalQuizzes(state) {return state.localQuizzes;}
-export const { addQuiz, modifyQuiz } = localQuizzes.actions;
+export const { addQuiz, modifyQuiz, deleteQuiz } = localQuizzes.actions;
 export default localQuizzes;

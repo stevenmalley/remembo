@@ -23,8 +23,10 @@ function App() {
         <Routes>
           <Route path="/" element={<Quizzes />} />
           <Route path="/quiz/:quizID" element={<Quiz />} />
+          <Route path="/quiz/local/:localID" element={<Quiz />} />
           <Route path="/buildQuiz/" element={<QuizBuilder />} />
-          <Route path="/buildQuiz/:localID" element={<QuizBuilder />} />
+          <Route path="/buildQuiz/:quizID" element={<QuizBuilder />} />
+          <Route path="/buildQuiz/local/:localID" element={<QuizBuilder />} />
         </Routes>
       </Router>
       </Provider>

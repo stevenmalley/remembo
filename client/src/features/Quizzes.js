@@ -28,7 +28,7 @@ function Quizzes() {
     ))}
     <h2 className="quizzesHeader">My Quizzes</h2>
     {localQuizzes.map((quiz,i) => (
-      <Link key={"localQuiz"+i} to={"buildQuiz/"+i} className="quizLink">{quiz.data.name}</Link>
+      <Link key={"localQuiz"+i} to={"quiz/local/"+i} className="quizLink">{quiz.data.name}</Link>
     ))}
     <Link to="buildQuiz/">create new quiz</Link>
     </div>
