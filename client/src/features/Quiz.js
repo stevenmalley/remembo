@@ -6,16 +6,15 @@ import fetcher from '../fetcher';
 import './Quiz.css';
 
 function Quiz () {
-  const [ quiz, setQuiz ] = useState({data:{name:"",description:""},facts:[]});
+  const [ quiz, setQuiz ] = useState({data:{name:"",description:"",owner:""},facts:[]});
   const localQuizzes = useSelector(selectLocalQuizzes);
 
   const { quizID, localID } = useParams();
   const navigate = useNavigate();
 
   useEffect(()=>{
-    if (localID !== undefined) {
-      setQuiz(localQuizzes[localID]);
-    } else {
+    if (localQuizzes[localID]) setQuiz(localQuizzes[localID]);
+    else if (quizID) {
       async function getQuiz() {
         const response = await fetcher("/quiz/"+quizID);
         const jsonResponse = await response.json();
@@ -23,7 +22,7 @@ function Quiz () {
       }
       getQuiz();
     }
-  },[]);
+  },[localQuizzes]);
 
   function factClickHandler(i) {
     return e => {

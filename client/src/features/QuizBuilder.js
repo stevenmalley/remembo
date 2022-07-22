@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { addQuiz, modifyQuiz, deleteQuiz, selectLocalQuizzes } from '../store/localQuizzes';
+import { selectAuth } from '../store/auth';
 import QuizBuilderItem from './QuizBuilderItem';
 import './QuizBuilder.css';
 
@@ -10,10 +11,15 @@ function QuizBuilder() {
   
   const navigate = useNavigate();
   const { localID } = useParams();
+  const auth = useSelector(selectAuth);
+  const username = auth.login ? auth.username : "me";
   const localQuizzes = useSelector(selectLocalQuizzes);
-  const thisQuiz = localQuizzes[localID] || {data:{name:"",description:"",owner:""},facts:[{text:"",info:"",hint:""}]};
-  const [ quiz, setQuiz ] = useState(thisQuiz);
+  const [ quiz, setQuiz ] = useState({data:{name:"",description:"",owner:username},facts:[{text:"",info:"",hint:""}]});
   const [ changed, setChanged ] = useState(false);
+
+  useEffect(()=>{
+    if (localQuizzes[localID]) setQuiz(localQuizzes[localID]);
+  },[localQuizzes]);
   
   const dispatch = useDispatch();
 
@@ -45,8 +51,9 @@ function QuizBuilder() {
     setChanged(false);
     
     if (quiz.data.name && quiz.facts.every(fact => fact.text)) {
-      if (localID === undefined) dispatch(addQuiz(quiz));
-      else dispatch(modifyQuiz({index:localID,quiz:quiz}));
+      if (localID === undefined) {
+        dispatch(addQuiz(quiz)).then(navigate("/buildQuiz/local/"+quiz.length-1));
+      } else dispatch(modifyQuiz({index:localID,quiz:quiz}));
     }
   }
 
@@ -57,7 +64,6 @@ function QuizBuilder() {
             owner: quiz.data.owner},
       facts: []
     };
-    let itemID = 0;
     for (const item of document.getElementsByClassName("item")) {
       const newItem = {
         text: item.getElementsByClassName("itemtext")[0].value,

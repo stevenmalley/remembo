@@ -1,5 +1,3 @@
-
-
 module.exports = pool => ({
 
   async getQuizzes(){
@@ -16,5 +14,25 @@ module.exports = pool => ({
       facts:factResponse.rows
     };
   },
+
+  async findByUsername(username,cb) {
+    const userResponse = await pool.query(`SELECT * FROM users WHERE username = '${username}'`);
+    cb(null,userResponse.rows[0]);
+  },
+
+  async findById(id,cb) {
+    const userResponse = await pool.query(`SELECT * FROM users WHERE id = ${id}`);
+    cb(null,userResponse.rows[0]);
+  },
+
+  async register(username,password) {
+    const userResponse = await pool.query(`SELECT * FROM users WHERE username = '${username}'`);
+    if (userResponse.rows.length === 0) {
+      await pool.query(`INSERT INTO users (username,password) VALUES ('${username}','${password}')`);
+      return true;
+    } else {
+      return false;
+    }
+  }
 
 });

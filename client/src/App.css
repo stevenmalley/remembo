@@ -10,3 +10,7 @@ a {
   color: rgb(0, 131, 120);
   text-decoration: none;
 }
+
+.accountBarLink {
+  margin: 5px 25px;
+}
