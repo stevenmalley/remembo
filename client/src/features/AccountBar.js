@@ -1,6 +1,7 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { NavLink } from "react-router-dom";
 import { logout, selectAuth } from '../store/auth';
+import { clearPrivateQuizzes } from '../store/privateQuizzes';
 
 
 export default function AccountBar() {
@@ -8,11 +9,13 @@ export default function AccountBar() {
   const dispatch = useDispatch();
 
   function handleLogout() {
+    dispatch(clearPrivateQuizzes());
     dispatch(logout());
   }
 
   return auth.login ?
       (<div>
+        <span id="usernameSpan">{auth.username}</span>
         <button onClick={handleLogout}>LOG OUT</button>
       </div>) : 
       (<div>

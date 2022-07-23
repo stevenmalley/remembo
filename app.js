@@ -87,28 +87,52 @@ app.get("/api/quizzes",
   }
 );
 
-app.get("/api/quiz/:quizID",
+app.post("/api/privateQuizzes", // receives {username}
+  authenticate,
   async (req,res,next) => {
-    const quiz = await db.getQuiz(req.params.quizID);
-    res.status(200).send(quiz);
+    const privateQuizzes = await db.getPrivateQuizzes(req.user.username);
+    res.status(200).send(privateQuizzes);
   }
 );
 
-app.post("/api/quiz", // save new quiz
+app.get("/api/quiz/:quizID",
   async (req,res,next) => {
-    
+    const quiz = await db.getQuiz(req.params.quizID);
+    if (quiz.data.public || (req.user && quiz.data.owner === req.user.username)) res.status(200).send(quiz);
+    else res.status(400).send({message:"private quiz"});
+  }
+);
+
+app.post("/api/quiz", // save new quiz, receives {quiz}
+  authenticate,
+  async (req,res,next) => {
+    const quiz = req.body;
+    if (req.user.username === quiz.data.owner && quiz.data.name && quiz.facts.every(fact => fact.text)) {
+      const quizID = await db.saveQuiz(quiz);
+      res.status(200).send({message:"quiz saved",quizID});
+    }
   }
 )
 
-app.put("/api/quiz/:quizID", // modify saved quiz
+app.put("/api/quiz/:quizID", // modify saved quiz, receives {quiz}
+  authenticate,
   async (req,res,next) => {
-    
+    const quiz = req.body;
+    if (req.params.quizID === quiz.data.id && req.user.username === quiz.data.owner && quiz.data.name && quiz.facts.every(fact => fact.text)) {
+      await db.modifyQuiz(quiz);
+      res.status(200).send({message:"quiz modified"});
+    }
   }
 )
 
-app.delete("/api/quiz/:quizID", // delete saved quiz
+app.delete("/api/quiz/:quizID", // delete saved quiz, receives {quiz}
+  authenticate,
   async (req,res,next) => {
-    
+    const quiz = req.body;
+    if (req.params.quizID === quiz.data.id && req.user.username === quiz.data.owner) {
+      await db.deleteQuiz(quiz);
+      res.status(200).send({message:"quiz deleted"});
+    }
   }
 )
 
@@ -120,6 +144,18 @@ app.get("/api/loginFail",
 
 app.post("/api/login",
   passport.authenticate("local", {failureRedirect: "/api/loginFail"}),
+  (req,res,next) => {res.status(200).send({message:"AUTHENTICATED",username:req.user.username})}
+);
+
+app.post("/api/checkLogin",
+  authenticate,
+  (req,res,next) => {
+    if (req.body.username === req.user.username) return next();
+    else {
+      req.logout(null,()=>{});
+      res.redirect("/api/loginFail");
+    }
+  },
   (req,res,next) => {res.status(200).send({message:"AUTHENTICATED",username:req.user.username})}
 );
 

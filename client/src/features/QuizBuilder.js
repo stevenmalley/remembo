@@ -1,25 +1,38 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { addQuiz, modifyQuiz, deleteQuiz, selectLocalQuizzes } from '../store/localQuizzes';
+import { addLocalQuiz, modifyLocalQuiz, deleteLocalQuiz, selectLocalQuizzes } from '../store/localQuizzes';
+import { addPrivateQuiz, modifyPrivateQuiz, deletePrivateQuiz } from '../store/privateQuizzes';
 import { selectAuth } from '../store/auth';
 import QuizBuilderItem from './QuizBuilderItem';
+import fetcher from '../fetcher';
 import './QuizBuilder.css';
 
 
 function QuizBuilder() {
   
   const navigate = useNavigate();
-  const { localID } = useParams();
+  const { localID, quizID } = useParams();
   const auth = useSelector(selectAuth);
   const username = auth.login ? auth.username : "me";
   const localQuizzes = useSelector(selectLocalQuizzes);
   const [ quiz, setQuiz ] = useState({data:{name:"",description:"",owner:username},facts:[{text:"",info:"",hint:""}]});
   const [ changed, setChanged ] = useState(false);
 
+  async function getQuiz() {
+    const response = await fetcher("/quiz/"+quizID,
+      {method: "GET", credentials:"include", headers: {"Content-Type":"application/json", "Connection": "keep-alive"}}); // send cookie when retrieving a private quiz
+    const jsonResponse = await response.json();
+    if (jsonResponse.message !== "private quiz") setQuiz(jsonResponse);
+  }
+  
   useEffect(()=>{
-    if (localQuizzes[localID]) setQuiz(localQuizzes[localID]);
-  },[localQuizzes]);
+    if (auth.login) {
+      if (quizID !== undefined) {
+        getQuiz();
+      }
+    } else if (localQuizzes[localID]) setQuiz(localQuizzes[localID]);
+  },[auth,localQuizzes]);
   
   const dispatch = useDispatch();
 
@@ -45,21 +58,32 @@ function QuizBuilder() {
     }
   }
   
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
 
     setChanged(false);
     
     if (quiz.data.name && quiz.facts.every(fact => fact.text)) {
-      if (localID === undefined) {
-        dispatch(addQuiz(quiz)).then(navigate("/buildQuiz/local/"+quiz.length-1));
-      } else dispatch(modifyQuiz({index:localID,quiz:quiz}));
+      if (auth.login) {
+        if (quizID === undefined) {
+          const newQuizID = await dispatch(addPrivateQuiz(quiz));
+          navigate("/buildQuiz/"+newQuizID);
+        } else {
+          dispatch(modifyPrivateQuiz(quiz));
+        }
+      } else {
+        if (localID === undefined) {
+          navigate("local/"+localQuizzes.length)
+          dispatch(addLocalQuiz(quiz));
+        } else dispatch(modifyLocalQuiz({index:localID,quiz:quiz}));
+      }
     }
   }
 
   function saveQuiz() {
     const newQuiz = {
-      data: {name: document.getElementById("quizBuilderTitle").value,
+      data: {id: quiz.data.id, // undefined for local quizzes, value provided by server for private quizzes
+            name: document.getElementById("quizBuilderTitle").value,
             description: document.getElementById("quizBuilderDescription").value,
             owner: quiz.data.owner},
       facts: []
@@ -77,30 +101,25 @@ function QuizBuilder() {
 
   function deleteThisQuiz(e) {
     e.preventDefault();
-    if (localID !== undefined) dispatch(deleteQuiz(localID));
+    if (quizID !== undefined) dispatch(deletePrivateQuiz(quiz))
+    else if (localID !== undefined) dispatch(deleteLocalQuiz(localID));
     navigate("/");
   }
 
   function playThisQuiz(e) {
     e.preventDefault();
     if (!changed && quiz.data.name && quiz.facts.every(fact => fact.text)) {
-      saveQuiz();
-      if (localID !== undefined) {
-        dispatch(modifyQuiz({index:localID,quiz:quiz}));
-        navigate("/quiz/local/"+localID);
-      } else {
-        dispatch(addQuiz(quiz));
-        navigate("/quiz/local/"+(localQuizzes.length-1)); // a new quiz created, user still on the new quiz page (no localID parameter), the quiz will be found here
-      }
+      if (auth.login) navigate("/quiz/"+quiz.data.id);
+      else navigate("/quiz/local/"+localID);
     }
   }
 
   return (
     <form onSubmit={handleSubmit}>
-      <button onClick={deleteThisQuiz}>DELETE QUIZ</button>
-      <button onClick={playThisQuiz} disabled={changed}>PLAY QUIZ</button>
+      <button onClick={deleteThisQuiz}>DELETE LIST</button>
+      <button onClick={playThisQuiz} disabled={changed}>PLAY LIST</button>
       <br />
-      <label htmlFor="quizBuilderTitle" className="mainLabel">Quiz Title:</label>
+      <label htmlFor="quizBuilderTitle" className="mainLabel">List Title:</label>
       <input type="text" id="quizBuilderTitle" onChange={changeHandler} value={quiz.data.name} required />
       <br />
       <label htmlFor="quizBuilderDescription" className="mainLabel">Description:</label>

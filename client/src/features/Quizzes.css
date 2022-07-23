@@ -1,12 +1,24 @@
-.quizzesHeader {
-  color: rgb(0, 131, 120);
+.aboutLink {
+  color: black;
+  font-weight: bold;
+  padding: 10px 20px;
+  border-radius: 10px;
+  background: #ccc;
 }
 
-.quizLink {
+.aboutLink:hover {
+  background: rgb(255, 234, 113);
+}
+
+.quizzesHeader {
+  color: rgb(0, 131, 120);
+  margin-top: 45px;
+}
+
+.quizLink, .newQuizLink {
   display: block;
   color: black;
   padding: 10px 20px;
-  background: rgb(0, 221, 203);
   border-radius: 10px;
   max-width: 600px;
   margin: 10px auto;
@@ -14,6 +26,14 @@
   font-size: 1.1em;
 }
 
-.quizLink:hover {
+.quizLink {
+  background: rgb(0, 221, 203);
+}
+
+.newQuizLink {
+  border: 1px solid black;
+}
+
+.quizLink:hover, .newQuizLink:hover {
   background: rgb(255, 234, 113);
 }

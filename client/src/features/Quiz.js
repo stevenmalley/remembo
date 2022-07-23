@@ -2,12 +2,14 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { selectLocalQuizzes } from '../store/localQuizzes';
+import { selectAuth } from '../store/auth';
 import fetcher from '../fetcher';
 import './Quiz.css';
 
 function Quiz () {
-  const [ quiz, setQuiz ] = useState({data:{name:"",description:"",owner:""},facts:[]});
+  const [ quiz, setQuiz ] = useState({data:{name:"",description:"",owner:""},facts:[{text:"private quiz",revealed:true}]});
   const localQuizzes = useSelector(selectLocalQuizzes);
+  const auth = useSelector(selectAuth);
 
   const { quizID, localID } = useParams();
   const navigate = useNavigate();
@@ -16,9 +18,10 @@ function Quiz () {
     if (localQuizzes[localID]) setQuiz(localQuizzes[localID]);
     else if (quizID) {
       async function getQuiz() {
-        const response = await fetcher("/quiz/"+quizID);
+        const response = await fetcher("/quiz/"+quizID,
+          {method: "GET", credentials:"include", headers: {"Content-Type":"application/json", "Connection": "keep-alive"}}); // send cookie when retrieving a private quiz
         const jsonResponse = await response.json();
-        setQuiz(jsonResponse);
+        if (jsonResponse.message !== "private quiz") setQuiz(jsonResponse);
       }
       getQuiz();
     }
@@ -51,15 +54,16 @@ function Quiz () {
   }
 
   function editQuiz() {
-    navigate("/buildQuiz/local/"+localID);
+    if (quizID !== undefined) navigate("/buildQuiz/"+quizID);
+    else if (localID !== undefined) navigate("/buildQuiz/local/"+localID);
   }
 
   return (
     <div id="quiz">
       <h3>{quiz.data.name}</h3>
       <h4>{quiz.data.description}</h4>
-      <h4>quiz author: {quiz.data.owner}</h4>
-      {localID !== undefined ? <button onClick={editQuiz}>EDIT QUIZ</button> : null}
+      <h4 className="authorHeading">list author: {quiz.data.owner}</h4>
+      {localID !== undefined || (auth.login && quiz.data.owner === auth.username) ? <button onClick={editQuiz}>EDIT LIST</button> : null}
       {quiz.facts.map((fact,i) => (
         <div key={"fact"+i} id={"fact"+i} className="factWrapper" style={{backgroundColor:fact.revealed ? "white" : "gold"}}>
           <div onClick={factClickHandler(i)} className="textWrapper">
@@ -74,7 +78,7 @@ function Quiz () {
         onClick={showAllHints}>show all hints</button>
       <button className={quiz.facts.some(fact => !fact.revealed) ? "allFactButton quizButton" : "irrelevantButton quizButton"}
         onClick={revealAllFacts}>reveal all facts</button>
-      <button className="resetButton quizButton" onClick={resetFacts}>reset quiz</button>
+      <button className="resetButton quizButton" onClick={resetFacts}>reset list</button>
     </div>
   );
 }

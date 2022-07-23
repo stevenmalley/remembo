@@ -14,3 +14,7 @@ a {
 .accountBarLink {
   margin: 5px 25px;
 }
+
+#usernameSpan {
+  padding-right: 25px;
+}

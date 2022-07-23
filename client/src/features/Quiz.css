@@ -4,6 +4,10 @@
   color: black;
 }
 
+.authorHeading {
+  font-weight: normal;
+}
+
 .factWrapper {
   background-color: white;
   margin: 10px auto;
