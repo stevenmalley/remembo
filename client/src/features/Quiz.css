@@ -8,6 +8,10 @@
   font-weight: normal;
 }
 
+.quizTopButton {
+  margin: 10px 25px;
+}
+
 .factWrapper {
   background-color: white;
   margin: 10px auto;

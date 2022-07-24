@@ -26,7 +26,7 @@ export function addLocalQuiz(quiz) {
       localStorage.setItem("localQuizzes",JSON.stringify(localStorageQuizzes));
     } else localStorage.setItem("localQuizzes",JSON.stringify([quiz]));
 
-    return await dispatch({type:"localQuizzes/addQuiz",payload:quiz});
+    return dispatch({type:"localQuizzes/addQuiz",payload:quiz});
   }
 }
 

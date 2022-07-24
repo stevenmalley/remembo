@@ -16,14 +16,14 @@ module.exports = pool => ({
     const ownerResponse = await pool.query(`SELECT username FROM users WHERE id = ${quizResponse.rows[0].owner}`);
     const factResponse = await pool.query(`SELECT * FROM facts WHERE quiz_id = ${id}`);
     return {
-      data:{...quizResponse.rows[0],owner:ownerResponse.rows[0].username}, // replace owner_id with owner name
+      data:{...quizResponse.rows[0],owner:ownerResponse.rows[0].username}, // replace owner id with owner name
       facts:factResponse.rows
     };
   },
 
   async saveQuiz(quiz) {
     const ownerResponse = await pool.query(`SELECT id FROM users WHERE username = '${quiz.data.owner}'`);
-    const quizResponse = await pool.query(`INSERT INTO quizzes (owner,name,description,public) VALUES ('${ownerResponse.rows[0].id}','${quiz.data.name}','${quiz.data.description}',FALSE) RETURNING id`);
+    const quizResponse = await pool.query(`INSERT INTO quizzes (owner,name,description,public) VALUES (${ownerResponse.rows[0].id},'${quiz.data.name}','${quiz.data.description}',FALSE) RETURNING id`);
     const quizID = quizResponse.rows[0].id;
     const valuesString = quiz.facts.map((fact,i) => `(${quizID},'${fact.text}','${fact.hint}',${i},'${fact.info}')`).join(", ");
     await pool.query(`INSERT INTO facts (quiz_id,text,hint,order_number,info) VALUES `+valuesString);
@@ -31,17 +31,34 @@ module.exports = pool => ({
   },
 
   async modifyQuiz(quiz) {
-    const ownerResponse = await pool.query(`SELECT id FROM users WHERE username = '${quiz.data.owner}'`);
-    await pool.query(`UPDATE quizzes SET owner = '${ownerResponse.rows[0].id}', name = '${quiz.data.name}', description = '${quiz.data.description}' WHERE id = ${quiz.data.id}`);
+    await pool.query(`UPDATE quizzes SET name = '${quiz.data.name}', description = '${quiz.data.description}' WHERE id = ${quiz.data.id}`);
     await pool.query(`DELETE FROM facts WHERE quiz_id = ${quiz.data.id}`);
     const valuesString = quiz.facts.map((fact,i) => `(${quiz.data.id},'${fact.text}','${fact.hint}',${i},'${fact.info}')`).join(", ");
     await pool.query(`INSERT INTO facts (quiz_id,text,hint,order_number,info) VALUES `+valuesString);
+    return true;
   },
 
-  async deleteQuiz(quiz) {
-    await pool.query(`DELETE FROM facts WHERE quiz_id = ${quiz.data.id}`);
-    await pool.query(`DELETE FROM quizzes WHERE id = ${quiz.data.id}`);
+  async deleteQuiz(quizID) {
+    await pool.query(`DELETE FROM facts WHERE quiz_id = ${quizID}`);
+    return pool.query(`DELETE FROM quizzes WHERE id = ${quizID}`);
   },
+
+  async publishQuiz(quizID) {
+    return pool.query(`UPDATE quizzes SET public = TRUE WHERE id = ${quizID}`);
+  },
+
+  async unpublishQuiz(quizID) {
+    return pool.query(`UPDATE quizzes SET public = FALSE WHERE id = ${quizID}`);
+  },
+
+  async confirmOwnership(username,quizID) {
+    const ownerResponse = await pool.query(`SELECT id FROM users WHERE username = '${username}'`);
+    const quizResponse = await pool.query(`SELECT owner FROM quizzes WHERE id = ${quizID}`);
+    return (ownerResponse.rows[0].id === quizResponse.rows[0].owner);
+  },
+
+
+
 
   async findByUsername(username,cb) {
     const userResponse = await pool.query(`SELECT * FROM users WHERE username = '${username}'`);

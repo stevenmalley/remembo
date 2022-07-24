@@ -97,9 +97,11 @@ app.post("/api/privateQuizzes", // receives {username}
 
 app.get("/api/quiz/:quizID",
   async (req,res,next) => {
-    const quiz = await db.getQuiz(req.params.quizID);
-    if (quiz.data.public || (req.user && quiz.data.owner === req.user.username)) res.status(200).send(quiz);
-    else res.status(400).send({message:"private quiz"});
+    if (!isNaN(req.params.quizID)) {
+      const quiz = await db.getQuiz(req.params.quizID);
+      if (quiz.data.public || (req.user && quiz.data.owner === req.user.username)) res.status(200).send(quiz);
+      else res.status(400).send({message:"private quiz"});
+    }
   }
 );
 
@@ -107,7 +109,7 @@ app.post("/api/quiz", // save new quiz, receives {quiz}
   authenticate,
   async (req,res,next) => {
     const quiz = req.body;
-    if (req.user.username === quiz.data.owner && quiz.data.name && quiz.facts.every(fact => fact.text)) {
+    if (req.user.username === quiz.data.owner && quiz.data.name && quiz.facts.length > 0 && quiz.facts.every(fact => fact.text)) {
       const quizID = await db.saveQuiz(quiz);
       res.status(200).send({message:"quiz saved",quizID});
     }
@@ -117,21 +119,46 @@ app.post("/api/quiz", // save new quiz, receives {quiz}
 app.put("/api/quiz/:quizID", // modify saved quiz, receives {quiz}
   authenticate,
   async (req,res,next) => {
-    const quiz = req.body;
-    if (req.params.quizID === quiz.data.id && req.user.username === quiz.data.owner && quiz.data.name && quiz.facts.every(fact => fact.text)) {
-      await db.modifyQuiz(quiz);
-      res.status(200).send({message:"quiz modified"});
+    const confirmed = await db.confirmOwnership(req.user.username,req.params.quizID);
+    if (confirmed) {
+      const quiz = req.body;
+      if (req.params.quizID === quiz.data.id && quiz.data.name && quiz.facts.length > 0 && quiz.facts.every(fact => fact.text)) {
+        await db.modifyQuiz(quiz);
+        res.status(200).send({message:"quiz modified"});
+      }
     }
   }
 )
 
-app.delete("/api/quiz/:quizID", // delete saved quiz, receives {quiz}
+app.delete("/api/quiz/:quizID", // delete saved quiz, no body
   authenticate,
   async (req,res,next) => {
-    const quiz = req.body;
-    if (req.params.quizID === quiz.data.id && req.user.username === quiz.data.owner) {
-      await db.deleteQuiz(quiz);
+    const confirmed = await db.confirmOwnership(req.user.username,req.params.quizID);
+    if (confirmed) {
+      await db.deleteQuiz(req.params.quizID);
       res.status(200).send({message:"quiz deleted"});
+    }
+  }
+)
+
+app.put("/api/publishQuiz/:quizID", // publish saved quiz, no body
+  authenticate,
+  async (req,res,next) => {
+    const confirmed = await db.confirmOwnership(req.user.username,req.params.quizID);
+    if (confirmed) {
+      await db.publishQuiz(req.params.quizID);
+      res.status(200).send({message:"quiz published"});
+    }
+  }
+)
+
+app.put("/api/unpublishQuiz/:quizID", // move public quiz to private, no body
+  authenticate,
+  async (req,res,next) => {
+    const confirmed = await db.confirmOwnership(req.user.username,req.params.quizID);
+    if (confirmed) {
+      await db.unpublishQuiz(req.params.quizID);
+      res.status(200).send({message:"quiz unpublished"});
     }
   }
 )

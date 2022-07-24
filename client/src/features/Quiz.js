@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { selectLocalQuizzes } from '../store/localQuizzes';
+import { publishQuiz, unpublishQuiz } from '../store/privateQuizzes';
 import { selectAuth } from '../store/auth';
 import fetcher from '../fetcher';
 import './Quiz.css';
@@ -13,6 +14,7 @@ function Quiz () {
 
   const { quizID, localID } = useParams();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   useEffect(()=>{
     if (localQuizzes[localID]) setQuiz(localQuizzes[localID]);
@@ -58,12 +60,25 @@ function Quiz () {
     else if (localID !== undefined) navigate("/buildQuiz/local/"+localID);
   }
 
+  function publishThisQuiz() {
+    dispatch(publishQuiz(quiz));
+    setQuiz({...quiz,data:{...quiz.data,public:true}});
+  }
+
+  function unpublishThisQuiz() {
+    dispatch(unpublishQuiz(quiz));
+    setQuiz({...quiz,data:{...quiz.data,public:false}});
+  }
+
   return (
     <div id="quiz">
       <h3>{quiz.data.name}</h3>
       <h4>{quiz.data.description}</h4>
       <h4 className="authorHeading">list author: {quiz.data.owner}</h4>
-      {localID !== undefined || (auth.login && quiz.data.owner === auth.username) ? <button onClick={editQuiz}>EDIT LIST</button> : null}
+      {(localID !== undefined || (auth.login && (quiz.data.owner === auth.username) && !quiz.data.public)) ? <button onClick={editQuiz} className="quizTopButton">EDIT LIST</button> : null}
+      {(auth.login && (quiz.data.owner === auth.username)) ?
+        (quiz.data.public ? <button onClick={unpublishThisQuiz} className="quizTopButton">MAKE LIST PRIVATE</button> : <button onClick={publishThisQuiz} className="quizTopButton">MAKE LIST PUBLIC</button>)
+        : null}
       {quiz.facts.map((fact,i) => (
         <div key={"fact"+i} id={"fact"+i} className="factWrapper" style={{backgroundColor:fact.revealed ? "white" : "gold"}}>
           <div onClick={factClickHandler(i)} className="textWrapper">
@@ -77,7 +92,7 @@ function Quiz () {
       <button className={quiz.facts.some(fact => !fact.revealed && fact.hint && !fact.hintDisplayed) ? "allHintButton quizButton" : "irrelevantButton quizButton"}
         onClick={showAllHints}>show all hints</button>
       <button className={quiz.facts.some(fact => !fact.revealed) ? "allFactButton quizButton" : "irrelevantButton quizButton"}
-        onClick={revealAllFacts}>reveal all facts</button>
+        onClick={revealAllFacts}>reveal all items</button>
       <button className="resetButton quizButton" onClick={resetFacts}>reset list</button>
     </div>
   );

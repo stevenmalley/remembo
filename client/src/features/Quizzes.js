@@ -30,7 +30,7 @@ function Quizzes() {
         <Link key={"quiz"+quiz.id} to={"quiz/"+quiz.id} className="quizLink">{quiz.name}</Link>
       ))}
       <h2 className="quizzesHeader">My Lists</h2>
-      {localQuizzes.length > 0 ? <p>log in to save these lists</p> : null}
+      {localQuizzes.length > 0 ? <p style={{color:"red"}}>log in to save these lists</p> : null}
       {privateQuizzes.map(quiz => (
         <Link key={"privateQuiz"+quiz.id} to={"quiz/"+quiz.id} className="quizLink">{quiz.name}</Link>
       ))}

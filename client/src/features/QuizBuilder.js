@@ -12,6 +12,7 @@ import './QuizBuilder.css';
 function QuizBuilder() {
   
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const { localID, quizID } = useParams();
   const auth = useSelector(selectAuth);
   const username = auth.login ? auth.username : "me";
@@ -33,8 +34,6 @@ function QuizBuilder() {
       }
     } else if (localQuizzes[localID]) setQuiz(localQuizzes[localID]);
   },[auth,localQuizzes]);
-  
-  const dispatch = useDispatch();
 
   function changeHandler(e) {
     if (!changed) setChanged(true);
@@ -44,17 +43,18 @@ function QuizBuilder() {
   async function newFactInput(e) {
     e.preventDefault();
     if (!changed) setChanged(true);
-    setQuiz(quiz => ({...quiz,facts:quiz.facts.concat([{text:"",info:"",hint:""}])})); // rerender
-    //document.getElementsByClassName("item")[document.getElementsByClassName("item").length-1].getElementsByClassName("itemtext")[0].focus();
-    // requires a delay to focus on new itemtext element
-    setTimeout(()=>document.getElementsByClassName("item")[document.getElementsByClassName("item").length-1].getElementsByClassName("itemtext")[0].focus(),100);
+    await setQuiz(quiz => ({...quiz,facts:quiz.facts.concat([{text:"",info:"",hint:""}])})); // rerender
+    document.getElementsByClassName("item")[document.getElementsByClassName("item").length-1].getElementsByClassName("itemtext")[0].focus();
   }
 
   function deleteItem(id) {
     return e => {
       e.preventDefault();
-      if (!changed) setChanged(true);
-      setQuiz(quiz => ({...quiz,facts:quiz.facts.slice(0,id).concat(quiz.facts.slice(id+1))})); // rerender
+      if (quiz.facts.length > 1) {
+        if (!changed) setChanged(true);
+        setQuiz(quiz => ({...quiz,facts:quiz.facts.slice(0,id).concat(quiz.facts.slice(id+1))})); // rerender
+        window.scrollTo(0, document.body.scrollHeight);
+      }
     }
   }
   
@@ -63,26 +63,27 @@ function QuizBuilder() {
 
     setChanged(false);
     
-    if (quiz.data.name && quiz.facts.every(fact => fact.text)) {
+    if (quiz.data.name && quiz.facts.length > 0 && quiz.facts.every(fact => fact.text)) {
       if (auth.login) {
         if (quizID === undefined) {
           const newQuizID = await dispatch(addPrivateQuiz(quiz));
+          setQuiz({...quiz,data:{...quiz.data,id:newQuizID}});
           navigate("/buildQuiz/"+newQuizID);
         } else {
           dispatch(modifyPrivateQuiz(quiz));
         }
       } else {
         if (localID === undefined) {
-          navigate("local/"+localQuizzes.length)
           dispatch(addLocalQuiz(quiz));
+          navigate("local/"+JSON.parse(localStorage.getItem("localQuizzes")).length-1);
         } else dispatch(modifyLocalQuiz({index:localID,quiz:quiz}));
       }
     }
   }
 
-  function saveQuiz() {
+  async function saveQuiz() {
     const newQuiz = {
-      data: {id: quiz.data.id, // undefined for local quizzes, value provided by server for private quizzes
+      data: {id: quizID, // undefined for local quizzes, value provided by server for private quizzes
             name: document.getElementById("quizBuilderTitle").value,
             description: document.getElementById("quizBuilderDescription").value,
             owner: quiz.data.owner},
@@ -95,7 +96,7 @@ function QuizBuilder() {
         hint: item.getElementsByClassName("itemhint")[0].value};
       newQuiz.facts.push(newItem);
     }
-    setQuiz(newQuiz);
+    await setQuiz(newQuiz);
     return newQuiz;
   }
 
@@ -108,16 +109,16 @@ function QuizBuilder() {
 
   function playThisQuiz(e) {
     e.preventDefault();
-    if (!changed && quiz.data.name && quiz.facts.every(fact => fact.text)) {
-      if (auth.login) navigate("/quiz/"+quiz.data.id);
-      else navigate("/quiz/local/"+localID);
+    if (!changed && quiz.data.name && quiz.facts.length > 0 && quiz.facts.every(fact => fact.text)) {
+      if (auth.login && quizID !== undefined) navigate("/quiz/"+quizID);
+      else if (localID !== undefined) navigate("/quiz/local/"+localID);
     }
   }
 
   return (
     <form onSubmit={handleSubmit}>
-      <button onClick={deleteThisQuiz}>DELETE LIST</button>
-      <button onClick={playThisQuiz} disabled={changed}>PLAY LIST</button>
+      <button onClick={deleteThisQuiz} className="buildQuizTopButton" type="button">DELETE LIST</button>
+      <button onClick={playThisQuiz} disabled={changed} className="buildQuizTopButton" type="button">PLAY LIST</button>
       <br />
       <label htmlFor="quizBuilderTitle" className="mainLabel">List Title:</label>
       <input type="text" id="quizBuilderTitle" onChange={changeHandler} value={quiz.data.name} required />
@@ -128,8 +129,8 @@ function QuizBuilder() {
         <h3>Items:</h3>
         {quiz.facts.map((item,i) => <QuizBuilderItem key={"quizBuilderItem"+i} id={i} item={item} changeHandler={changeHandler} deleteItem={deleteItem} />)}
       </div>
-      <button onClick={newFactInput}>new item</button>
-      <input type="submit" value="SAVE" style={{background:changed ? "red" : "grey"}} disabled={!changed} />
+      <button onClick={newFactInput} type="button">new item</button>
+      <button type="submit" style={{background:changed ? "red" : "grey"}} disabled={!changed}>SAVE</button>
     </form>
   );
 }
