@@ -5,7 +5,9 @@ const dotenv = require("dotenv");
 dotenv.config();
 
 const Pool = require('pg').Pool
-const pool = new Pool({connectionString: process.env.DATABASE_URL});
+const poolOptions = {connectionString: process.env.DATABASE_URL};
+if (process.env.DEVELOPMENT !== "true") poolOptions.ssl = {rejectUnauthorized: false};
+const pool = new Pool(poolOptions);
 const db = require('./db')(pool);
 
 const bodyParser = require("body-parser");
