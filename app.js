@@ -17,7 +17,7 @@ const validator = require("validator");
 const { quizValid, quizEscaped } = require("./utils");
 
 const cors = require("cors");
-const whitelist = [undefined,'http://localhost:3000','http://localhost:8080','http://rememo.herokuapp.com','https://rememo.herokuapp.com'];
+const whitelist = [undefined,'http://localhost:3000','http://localhost:8080','http://remembo.herokuapp.com','https://remembo.herokuapp.com'];
 const corsOptions = {
   credentials: true,
   origin: (origin, callback) => {
