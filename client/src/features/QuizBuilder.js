@@ -65,18 +65,20 @@ function QuizBuilder() {
     
     if (quiz.data.name && quiz.facts.length > 0 && quiz.facts.every(fact => fact.text)) {
       if (auth.login) {
-        if (quizID === undefined) {
+        if (quizID === undefined) { // logged in; new and unsaved quiz
           const newQuizID = await dispatch(addPrivateQuiz(quiz));
           setQuiz({...quiz,data:{...quiz.data,id:newQuizID}});
           navigate("/buildQuiz/"+newQuizID);
-        } else {
+        } else { // logged in; modifying a saved quiz
           dispatch(modifyPrivateQuiz(quiz));
         }
       } else {
-        if (localID === undefined) {
+        if (localID === undefined) { // not logged in; new and unsaved quiz
           dispatch(addLocalQuiz(quiz));
-          navigate("local/"+JSON.parse(localStorage.getItem("localQuizzes")).length-1);
-        } else dispatch(modifyLocalQuiz({index:localID,quiz:quiz}));
+          navigate("/buildQuiz/local/"+(JSON.parse(localStorage.getItem("localQuizzes")).length-1));
+        } else { // not logged in; modifying a locally saved quiz
+          dispatch(modifyLocalQuiz({index:localID,quiz:quiz}));
+        }
       }
     }
   }

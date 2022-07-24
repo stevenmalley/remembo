@@ -19,7 +19,7 @@ export default function AccountBar() {
         <button onClick={handleLogout}>LOG OUT</button>
       </div>) : 
       (<div>
-        <NavLink className="accountBarLink" to='/login'>log in</NavLink>
-        <NavLink className="accountBarLink" to='/register'>register</NavLink>
+        <NavLink className="accountBarLink" to='/login' id="loginButton">log in</NavLink>
+        <NavLink className="accountBarLink" to='/register' id="registerButton">register</NavLink>
       </div>)
 }
