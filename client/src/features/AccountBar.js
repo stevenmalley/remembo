@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { logout, selectAuth } from '../store/auth';
 import { clearPrivateQuizzes } from '../store/privateQuizzes';
 
@@ -7,10 +7,12 @@ import { clearPrivateQuizzes } from '../store/privateQuizzes';
 export default function AccountBar() {
   const auth = useSelector(selectAuth);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   function handleLogout() {
     dispatch(clearPrivateQuizzes());
     dispatch(logout());
+    navigate("/");
   }
 
   return auth.login ?

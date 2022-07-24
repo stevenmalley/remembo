@@ -30,7 +30,7 @@ function App() {
         <LocalQuizProvider />
         <Router>
           <AccountBar />
-          <NavLink to="/"><h1 id="rememoHeader">REMEMO</h1></NavLink>
+          <NavLink to="/"><h1 id="rememboHeader">REMEMbO</h1></NavLink>
           <Routes>
             <Route path="/" element={<Quizzes />} />
             <Route path="/about" element={<About />} />

@@ -43,7 +43,7 @@ export function addPrivateQuiz(quiz) {
     const response = await fetcher("/quiz",
       {method: "POST", credentials:"include", headers: {"Content-Type":"application/json", "Connection":"keep-alive"}, body:JSON.stringify(quiz)});
     const jsonResponse = await response.json();
-    if (jsonResponse.message === "quiz saved") dispatch({type:"privateQuizzes/addQuiz",payload:{id:jsonResponse.quizID,...quiz.data}});
+    if (jsonResponse.message === "quiz saved") dispatch({type:"privateQuizzes/addQuiz",payload:{...quiz.data,id:jsonResponse.quizID}});
     return jsonResponse.quizID;
   }
 }

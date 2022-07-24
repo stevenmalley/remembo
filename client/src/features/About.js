@@ -4,7 +4,7 @@ import "./About.css";
 export default function About() {
   return (
     <div>
-      <p>Rememo is a tool that can help you memorise lists of information.</p>
+      <p>REMEMbO is a tool that can help you memorise lists of information.</p>
       <p>Create a list, add hints or supplementary information, and test yourself.</p>
       <p>It's a learning tool, not a competition, so you can always click to reveal each item.</p>
       <p>&nbsp;</p>

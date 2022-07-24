@@ -11,8 +11,11 @@ const db = require('./db')(pool);
 const bodyParser = require("body-parser");
 app.use(bodyParser.json());
 
+const validator = require("validator");
+const { quizValid, quizEscaped } = require("./utils");
+
 const cors = require("cors");
-const whitelist = [undefined,'http://localhost:3000','http://localhost:8080'];
+const whitelist = [undefined,'http://localhost:3000','http://localhost:8080','http://rememo.herokuapp.com','https://rememo.herokuapp.com'];
 const corsOptions = {
   credentials: true,
   origin: (origin, callback) => {
@@ -97,7 +100,7 @@ app.post("/api/privateQuizzes", // receives {username}
 
 app.get("/api/quiz/:quizID",
   async (req,res,next) => {
-    if (!isNaN(req.params.quizID)) {
+    if (validator.isInt(req.params.quizID)) {
       const quiz = await db.getQuiz(req.params.quizID);
       if (quiz.data.public || (req.user && quiz.data.owner === req.user.username)) res.status(200).send(quiz);
       else res.status(400).send({message:"private quiz"});
@@ -108,8 +111,8 @@ app.get("/api/quiz/:quizID",
 app.post("/api/quiz", // save new quiz, receives {quiz}
   authenticate,
   async (req,res,next) => {
-    const quiz = req.body;
-    if (req.user.username === quiz.data.owner && quiz.data.name && quiz.facts.length > 0 && quiz.facts.every(fact => fact.text)) {
+    const quiz = quizEscaped(req.body);
+    if (req.user.username === quiz.data.owner && quizValid(quiz)) {
       const quizID = await db.saveQuiz(quiz);
       res.status(200).send({message:"quiz saved",quizID});
     }
@@ -119,12 +122,14 @@ app.post("/api/quiz", // save new quiz, receives {quiz}
 app.put("/api/quiz/:quizID", // modify saved quiz, receives {quiz}
   authenticate,
   async (req,res,next) => {
-    const confirmed = await db.confirmOwnership(req.user.username,req.params.quizID);
-    if (confirmed) {
-      const quiz = req.body;
-      if (req.params.quizID === quiz.data.id && quiz.data.name && quiz.facts.length > 0 && quiz.facts.every(fact => fact.text)) {
-        await db.modifyQuiz(quiz);
-        res.status(200).send({message:"quiz modified"});
+    if (validator.isInt(req.params.quizID)) {
+      const confirmed = await db.confirmOwnership(req.user.username,req.params.quizID);
+      if (confirmed) {
+        const quiz = quizEscaped(req.body);
+        if (req.params.quizID === quiz.data.id && quizValid(quiz)) {
+          await db.modifyQuiz(quiz);
+          res.status(200).send({message:"quiz modified"});
+        }
       }
     }
   }
@@ -133,10 +138,12 @@ app.put("/api/quiz/:quizID", // modify saved quiz, receives {quiz}
 app.delete("/api/quiz/:quizID", // delete saved quiz, no body
   authenticate,
   async (req,res,next) => {
-    const confirmed = await db.confirmOwnership(req.user.username,req.params.quizID);
-    if (confirmed) {
-      await db.deleteQuiz(req.params.quizID);
-      res.status(200).send({message:"quiz deleted"});
+    if (validator.isInt(req.params.quizID)) {
+      const confirmed = await db.confirmOwnership(req.user.username,req.params.quizID);
+      if (confirmed) {
+        await db.deleteQuiz(req.params.quizID);
+        res.status(200).send({message:"quiz deleted"});
+      }
     }
   }
 )
@@ -144,10 +151,12 @@ app.delete("/api/quiz/:quizID", // delete saved quiz, no body
 app.put("/api/publishQuiz/:quizID", // publish saved quiz, no body
   authenticate,
   async (req,res,next) => {
-    const confirmed = await db.confirmOwnership(req.user.username,req.params.quizID);
-    if (confirmed) {
-      await db.publishQuiz(req.params.quizID);
-      res.status(200).send({message:"quiz published"});
+    if (validator.isInt(req.params.quizID)) {
+      const confirmed = await db.confirmOwnership(req.user.username,req.params.quizID);
+      if (confirmed) {
+        await db.publishQuiz(req.params.quizID);
+        res.status(200).send({message:"quiz published"});
+      }
     }
   }
 )
@@ -155,10 +164,12 @@ app.put("/api/publishQuiz/:quizID", // publish saved quiz, no body
 app.put("/api/unpublishQuiz/:quizID", // move public quiz to private, no body
   authenticate,
   async (req,res,next) => {
-    const confirmed = await db.confirmOwnership(req.user.username,req.params.quizID);
-    if (confirmed) {
-      await db.unpublishQuiz(req.params.quizID);
-      res.status(200).send({message:"quiz unpublished"});
+    if (validator.isInt(req.params.quizID)) {
+      const confirmed = await db.confirmOwnership(req.user.username,req.params.quizID);
+      if (confirmed) {
+        await db.unpublishQuiz(req.params.quizID);
+        res.status(200).send({message:"quiz unpublished"});
+      }
     }
   }
 )
@@ -171,7 +182,9 @@ app.get("/api/loginFail",
 
 app.post("/api/login",
   passport.authenticate("local", {failureRedirect: "/api/loginFail"}),
-  (req,res,next) => {res.status(200).send({message:"AUTHENTICATED",username:req.user.username})}
+  (req,res,next) => {
+    res.status(200).send({message:"AUTHENTICATED",username:req.user.username})
+  }
 );
 
 app.post("/api/checkLogin",
@@ -194,7 +207,12 @@ app.get("/api/logout",
 );
 
 app.post("/api/register",
-  async (req,res,next) => {await db.register(req.body.username,req.body.password); next();},
+  async (req,res,next) => {
+    if (req.body.username === validator.escape(req.body.username) && req.body.password === validator.escape(req.body.password)) {
+      await db.register(req.body.username,req.body.password);
+      return next();
+    } else res.redirect("/api/loginFail");
+  },
   passport.authenticate("local", {failureRedirect: "/api/loginFail"}),
   (req,res,next) => {res.status(200).send({message:"AUTHENTICATED",username:req.user.username})}
 );
