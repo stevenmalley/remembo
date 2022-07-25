@@ -16,7 +16,6 @@ const privateQuizzes = createSlice({
 export function uploadLocalQuizzes(username,localQuizzes) {
   return (dispatch,getState) => {
     localQuizzes.forEach(async quiz => {
-      console.log("uploading",quiz);
       quiz.data.owner = username; // replaces "me"
       const response = await fetcher("/quiz",
         {method: "POST", credentials:"include", headers: {"Content-Type":"application/json", "Connection":"keep-alive"}, body:JSON.stringify(quiz)});

@@ -27,7 +27,6 @@ function App() {
   return (
     <div className="App">
       <Provider store={store}>
-        <LocalQuizProvider />
         <Router>
           <AccountBar />
           <NavLink to="/"><h1 id="rememboHeader">REMEMbO</h1></NavLink>

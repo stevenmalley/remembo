@@ -40,6 +40,7 @@ export function checkLogin(username) {
     } else {
       dispatch({type:"auth/logout"});
     }
+    return jsonResponse;
   }
 }
 
@@ -61,6 +62,13 @@ export function logout() {
     await fetcher("/logout",
       {method: "GET", credentials:"include", headers: {"Content-Type":"application/json", "Connection": "keep-alive"}});
     dispatch({type:"auth/logout"});
+  }
+}
+
+export function regen() {
+  return async (dispatch, getState) => {
+    return await fetcher("/regen",
+      {method: "POST", credentials:"include", headers: {"Content-Type":"application/json", "Connection": "keep-alive"}});
   }
 }
 

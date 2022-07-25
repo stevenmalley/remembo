@@ -1,8 +1,8 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from "react-redux";
 import { selectLocalQuizzes, loadLocalQuizzes, deleteLocalQuizzes } from '../store/localQuizzes';
-import { uploadLocalQuizzes, retrievePrivateQuizzes } from '../store/privateQuizzes';
-import { selectAuth, checkLogin } from '../store/auth';
+import { selectPrivateQuizzes, uploadLocalQuizzes, retrievePrivateQuizzes } from '../store/privateQuizzes';
+import { selectAuth, checkLogin, regen } from '../store/auth';
 
 /*
 
@@ -21,6 +21,7 @@ export default function LocalQuizProvider() {
 
   const auth = useSelector(selectAuth);
   const localQuizzes = useSelector(selectLocalQuizzes);
+  const privateQuizzes = useSelector(selectPrivateQuizzes);
 
   const dispatch = useDispatch();
 
@@ -40,7 +41,11 @@ export default function LocalQuizProvider() {
         dispatch(uploadLocalQuizzes(auth.username,localStorageQuizzes));
         dispatch(deleteLocalQuizzes());
       }
-      dispatch(retrievePrivateQuizzes(auth.username));
+      if (privateQuizzes.length === 0) dispatch(retrievePrivateQuizzes(auth.username));
+
+      // reset session cookie every 3 minutes to remain logged in while browser tab is open
+      const regenInterval = setInterval(() => dispatch(regen()), 3*60*1000);
+      return () => clearInterval(regenInterval);
     }
   },[auth]);
 

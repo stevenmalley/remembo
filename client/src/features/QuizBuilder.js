@@ -53,7 +53,6 @@ function QuizBuilder() {
       if (quiz.facts.length > 1) {
         if (!changed) setChanged(true);
         setQuiz(quiz => ({...quiz,facts:quiz.facts.slice(0,id).concat(quiz.facts.slice(id+1))})); // rerender
-        window.scrollTo(0, document.body.scrollHeight);
       }
     }
   }

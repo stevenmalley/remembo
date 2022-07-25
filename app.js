@@ -128,7 +128,7 @@ app.put("/api/quiz/:quizID", // modify saved quiz, receives {quiz}
       const confirmed = await db.confirmOwnership(req.user.username,req.params.quizID);
       if (confirmed) {
         const quiz = quizEscaped(req.body);
-        if (req.params.quizID === quiz.data.id && quizValid(quiz)) {
+        if (req.params.quizID === String(quiz.data.id) && quizValid(quiz)) {
           await db.modifyQuiz(quiz);
           res.status(200).send({message:"quiz modified"});
         }
@@ -189,11 +189,24 @@ app.post("/api/login",
   }
 );
 
+app.post("/api/regen",
+  authenticate,
+  (req,res,next) => {
+    req.body = req.user;
+    return next();
+  },
+  passport.authenticate("local", {failureRedirect: "/api/loginFail"}),
+  (req,res,next) => {
+    res.status(200).send({message:"AUTHENTICATED",username:req.user.username});
+  }
+);
+
 app.post("/api/checkLogin",
   authenticate,
   (req,res,next) => {
-    if (req.body.username === req.user.username) return next();
-    else {
+    if (req.body.username === req.user.username) {
+      return next();
+    } else {
       req.logout(null,()=>{});
       res.redirect("/api/loginFail");
     }
