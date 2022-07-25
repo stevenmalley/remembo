@@ -40,7 +40,7 @@ function Quizzes() {
         {localQuizzes.map((quiz,i) => (
           <Link key={"localQuiz"+i} to={"quiz/local/"+i} className="quizLink">{quiz.data.name}</Link>
         ))}
-        <Link to="buildQuiz/" className="newQuizLink" id="createQuizButton">create new quiz</Link>
+        <Link to="buildQuiz/" className="newQuizLink" id="createQuizButton">create new list</Link>
       </div>
     </div>
   );
