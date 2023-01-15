@@ -24,7 +24,7 @@ function Quizzes() {
 
   return (
     <div>
-      <Link to="about/" className="aboutLink">ABOUT</Link>
+      <Link to="about/" className="rememboButton">ABOUT</Link>
       <div id="publicLists">
         <h2 className="quizzesHeader">Public Lists</h2>
         {publicQuizzes.map(quiz => (

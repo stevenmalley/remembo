@@ -18,3 +18,18 @@ a {
 #usernameSpan {
   padding-right: 25px;
 }
+
+.rememboButton {
+  color: black;
+  font-weight: bold;
+  padding: 10px 20px;
+  border-radius: 10px;
+  background: #d0d0d0;
+  border-width: 1;
+  border-color: #aaa
+}
+
+.rememboButton:hover:not(:disabled) {
+  color: gold;
+  background: #666;
+}

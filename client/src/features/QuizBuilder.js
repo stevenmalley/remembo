@@ -118,8 +118,8 @@ function QuizBuilder() {
 
   return (
     <form onSubmit={handleSubmit}>
-      <button onClick={deleteThisQuiz} className="buildQuizTopButton" type="button">DELETE LIST</button>
-      <button onClick={playThisQuiz} disabled={changed} className="buildQuizTopButton" type="button">PLAY LIST</button>
+      <button onClick={deleteThisQuiz} className="rememboButton buildQuizTopButton" type="button">DELETE LIST</button>
+      <button onClick={playThisQuiz} disabled={changed} style={{background:changed ? "grey" : ""}} className="rememboButton buildQuizTopButton" type="button">PLAY LIST</button>
       <br />
       <label htmlFor="quizBuilderTitle" className="mainLabel">List Title:</label>
       <input type="text" id="quizBuilderTitle" onChange={changeHandler} value={quiz.data.name} required />
@@ -130,8 +130,8 @@ function QuizBuilder() {
         <h3>Items:</h3>
         {quiz.facts.map((item,i) => <QuizBuilderItem key={"quizBuilderItem"+i} id={i} item={item} changeHandler={changeHandler} deleteItem={deleteItem} />)}
       </div>
-      <button onClick={newFactInput} type="button">new item</button>
-      <button type="submit" style={{background:changed ? "red" : "grey"}} disabled={!changed}>SAVE</button>
+      <button onClick={newFactInput} type="button" class="rememboButton">new item</button>
+      <button type="submit" class="rememboButton" style={{background:changed ? "red" : "grey"}} disabled={!changed}>SAVE</button>
     </form>
   );
 }

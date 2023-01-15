@@ -75,9 +75,9 @@ function Quiz () {
       <h3>{quiz.data.name}</h3>
       <h4>{quiz.data.description}</h4>
       <h4 className="authorHeading">list author: {quiz.data.owner}</h4>
-      {(localID !== undefined || (auth.login && (quiz.data.owner === auth.username) && !quiz.data.public)) ? <button onClick={editQuiz} className="quizTopButton">EDIT LIST</button> : null}
+      {(localID !== undefined || (auth.login && (quiz.data.owner === auth.username) && !quiz.data.public)) ? <button onClick={editQuiz} className="rememboButton quizTopButton">EDIT LIST</button> : null}
       {(auth.login && (quiz.data.owner === auth.username)) ?
-        (quiz.data.public ? <button onClick={unpublishThisQuiz} className="quizTopButton">MAKE LIST PRIVATE</button> : <button onClick={publishThisQuiz} className="quizTopButton">MAKE LIST PUBLIC</button>)
+        (quiz.data.public ? <button onClick={unpublishThisQuiz} className="rememboButton quizTopButton">MAKE LIST PRIVATE</button> : <button onClick={publishThisQuiz} className="rememboButton quizTopButton">MAKE LIST PUBLIC</button>)
         : null}
       {quiz.facts.map((fact,i) => (
         <div key={"fact"+i} id={"fact"+i} className="factWrapper" style={{backgroundColor:fact.revealed ? "white" : "gold"}}>

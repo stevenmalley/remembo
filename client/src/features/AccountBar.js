@@ -46,7 +46,7 @@ export default function AccountBar() {
   return auth.login ?
       (<div>
         <span id="usernameSpan">{auth.username}</span>
-        <button onClick={handleLogout}>LOG OUT</button>
+        <button onClick={handleLogout} className="btn">LOG OUT</button>
       </div>) : 
       (<div>
         <NavLink className="accountBarLink" to='/login' id="loginButton">log in</NavLink>
