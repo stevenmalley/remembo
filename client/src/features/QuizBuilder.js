@@ -130,8 +130,8 @@ function QuizBuilder() {
         <h3>Items:</h3>
         {quiz.facts.map((item,i) => <QuizBuilderItem key={"quizBuilderItem"+i} id={i} item={item} changeHandler={changeHandler} deleteItem={deleteItem} />)}
       </div>
-      <button onClick={newFactInput} type="button" class="rememboButton">new item</button>
-      <button type="submit" class="rememboButton" style={{background:changed ? "red" : "grey"}} disabled={!changed}>SAVE</button>
+      <button onClick={newFactInput} type="button" className="rememboButton">new item</button>
+      <button type="submit" className="rememboButton" style={{background:changed ? "red" : "grey"}} disabled={!changed}>SAVE</button>
     </form>
   );
 }
