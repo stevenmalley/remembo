@@ -7,8 +7,11 @@ a {
 }
 
 #rememboHeader {
-  color: rgb(0, 131, 120);
+  background: linear-gradient(#d7c669, #fff2b9 5%, #c5b56a 95%, #978c51);
+  color: rgb(6, 100, 92);
   text-decoration: none;
+  padding: 15px 0;
+  margin: 5px 0 15px 0;
 }
 
 .accountBarLink {

@@ -1,5 +1,5 @@
 #quiz {
-  background-color: rgb(0, 221, 203);
+  /* background-color: rgb(255 171 42); */
   padding: 20px 0;
   color: black;
 }
@@ -13,17 +13,31 @@
 }
 
 .factWrapper {
-  background-color: white;
+  background-color: rgb(0, 131, 120);
+  border: 1px solid #444;
   margin: 10px auto;
+  border-radius: 10px;
+  box-shadow: 2px 2px 1px 1px grey;
   max-width: 500px;
   color: black;
   position: relative;
   cursor: pointer;
 }
 
+.factWrapper:hover {
+  background-color: rgb(0, 110, 100);
+}
+
+.factWrapper.factRevealed {
+  background-color: white;
+}
+
 .textWrapper {
   width: 100%;
   min-height: 50px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .fact-info {
@@ -31,7 +45,7 @@
 }
 
 .fact-hint {
-  color: blue;
+  color: white;
 }
 
 .hintButton {
@@ -40,52 +54,37 @@
   position: absolute;
   top: 0;
   right: 0;
-  background: yellow;
+  background: #e9e77e;
+  font-weight: bold;
   font-size: 1.1em;
   margin: 3px;
   cursor: pointer;
-  border-top-left-radius: 10px;
-  border-bottom-left-radius: 10px;
+  border-radius: 10px;
+  /* border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px; */
 }
 
-.hintButton:hover {
+.hintButton:hover, .allHintButton:hover, .allFactButton:hover, .resetButton:hover {
   background: rgb(255, 255, 144);
-}
-
-.hintButton:active {
-  background: purple;
 }
 
 .quizButton {
   margin: 0 10px 10px;
   padding: 10px 15px;
   font-size: 1.1em;
-  color: white;
   font-weight: bold;
   cursor: pointer;
   border-radius: 10px;
 }
 
 .irrelevantButton {
-  background: #555;
+  background: #999;
 }
 
-.allHintButton {
-  background: blue;
+.allHintButton, .allFactButton, .resetButton {
+  background: #e9e77e;
 }
 
-.allFactButton {
-  background: red;
-}
-
-.resetButton {
-  background: green;
-}
-
-.allHintButton:hover, .allFactButton:hover, .resetButton:hover {
-  color: gold;
-}
-
-.allHintButton:active, .allFactButton:active, .resetButton:active {
-  background: purple;
+.hintButton:active, .allHintButton:active, .allFactButton:active, .resetButton:active {
+  background: white;
 }

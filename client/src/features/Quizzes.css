@@ -4,7 +4,7 @@
 
 .quizzesHeader {
   color: rgb(0, 131, 120);
-  margin-top: 45px;
+  margin: 55px 0 5px 0;
 }
 
 .quizLink, .newQuizLink {
@@ -19,13 +19,14 @@
 }
 
 .quizLink {
-  background: rgb(0, 221, 203);
+  background: linear-gradient(#d7c669, #fff2b9 5%, #c5b56a 95%, #978c51);
 }
 
 .newQuizLink {
   border: 1px solid black;
+  max-width: 300px;
 }
 
 .quizLink:hover, .newQuizLink:hover {
-  background: rgb(255, 234, 113);
+  background: linear-gradient(#d7c669, #ffea8e 5%, #cbb340 95%, #978c51);
 }

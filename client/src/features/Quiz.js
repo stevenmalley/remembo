@@ -80,7 +80,7 @@ function Quiz () {
         (quiz.data.public ? <button onClick={unpublishThisQuiz} className="rememboButton quizTopButton">MAKE LIST PRIVATE</button> : <button onClick={publishThisQuiz} className="rememboButton quizTopButton">MAKE LIST PUBLIC</button>)
         : null}
       {quiz.facts.map((fact,i) => (
-        <div key={"fact"+i} id={"fact"+i} className="factWrapper" style={{backgroundColor:fact.revealed ? "white" : "gold"}}>
+        <div key={"fact"+i} id={"fact"+i} className={"factWrapper "+(fact.revealed ? "factRevealed" : "")}>
           <div onClick={factClickHandler(i)} className="textWrapper">
             {fact.revealed ? <div className="fact-text">{fact.text}</div> : null}
             {fact.revealed ? <div className="fact-info">{fact.info}</div> : null}
