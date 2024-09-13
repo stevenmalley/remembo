@@ -43,13 +43,15 @@ export default function AccountBar() {
     navigate("/");
   }
 
-  return auth.login ?
-      (<div>
+  return <div className="AccountBar">
+      {auth.login ?
+      <div>
         <span id="usernameSpan">{auth.username}</span>
-        <button onClick={handleLogout} className="btn">LOG OUT</button>
-      </div>) : 
-      (<div>
+        <button onClick={handleLogout} className="btn">log out</button>
+      </div> :
+      <div>
         <NavLink className="accountBarLink" to='/login' id="loginButton">log in</NavLink>
         <NavLink className="accountBarLink" to='/register' id="registerButton">register</NavLink>
-      </div>)
+      </div> }
+    </div>;
 }

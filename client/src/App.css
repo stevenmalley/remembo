@@ -2,6 +2,29 @@
   text-align: center;
 }
 
+.AccountBar {
+  padding: 0 0 10px 0;
+  background-color: #eee;
+}
+
+.AccountBar button, .AccountBar a {
+  color: #333;
+  background: linear-gradient(13deg, #ebd7a1, white);
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+  padding: 5px 10px 5px;
+  border: 1px solid #ccc;
+  border-top-width: 0;
+  font-family: unset;
+  font-size: unset;
+  display: inline-block;
+  margin: 0 20px;
+  cursor: pointer;
+}
+.AccountBar button:hover, .AccountBar a:hover {
+  background: linear-gradient(13deg, #f1ce6d, #f8f7ce);
+}
+
 a {
   text-decoration: none;
 }
@@ -11,7 +34,7 @@ a {
   color: rgb(6, 100, 92);
   text-decoration: none;
   padding: 15px 0;
-  margin: 5px 0 15px 0;
+  margin: 0;
 }
 
 .accountBarLink {
@@ -23,13 +46,14 @@ a {
 }
 
 .rememboButton {
+  display: inline-block;
   color: black;
   font-weight: bold;
   padding: 10px 20px;
   border-radius: 10px;
   background: #d0d0d0;
   border: 1px solid #999;
-  margin: 0 10px 10px;
+  margin: 10px;
   cursor: pointer;
 }
 

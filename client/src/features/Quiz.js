@@ -97,7 +97,7 @@ function Quiz () {
         onClick={revealAllFacts}>reveal all items</button>
       <button className="resetButton quizButton" onClick={resetFacts}>reset list</button>
 
-      <div className="returnFooter">
+      <div>
         <Link to="/" className="rememboButton">return to list menu</Link>
       </div>
     </div>
