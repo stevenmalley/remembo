@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { selectLocalQuizzes } from '../store/localQuizzes';
 import { publishQuiz, unpublishQuiz } from '../store/privateQuizzes';
@@ -75,7 +75,8 @@ function Quiz () {
       <h3>{quiz.data.name}</h3>
       <h4>{quiz.data.description}</h4>
       <h4 className="authorHeading">list author: {quiz.data.owner}</h4>
-      {(localID !== undefined || (auth.login && (quiz.data.owner === auth.username) && !quiz.data.public)) ? <button onClick={editQuiz} className="rememboButton quizTopButton">EDIT LIST</button> : null}
+      {(localID !== undefined || (auth.login && (quiz.data.owner === auth.username) && !quiz.data.public)) ?
+        <button onClick={editQuiz} className="rememboButton quizTopButton">edit list</button> : null}
       {(auth.login && (quiz.data.owner === auth.username)) ?
         (quiz.data.public ? <button onClick={unpublishThisQuiz} className="rememboButton quizTopButton">MAKE LIST PRIVATE</button> : <button onClick={publishThisQuiz} className="rememboButton quizTopButton">MAKE LIST PUBLIC</button>)
         : null}
@@ -89,11 +90,16 @@ function Quiz () {
           {!fact.revealed && fact.hint && !fact.hintDisplayed ? <button className="hintButton" onClick={hintClickHandler(i)}>hint</button> : null }
         </div>
       ))}
+
       <button className={quiz.facts.some(fact => !fact.revealed && fact.hint && !fact.hintDisplayed) ? "allHintButton quizButton" : "irrelevantButton quizButton"}
         onClick={showAllHints}>show all hints</button>
       <button className={quiz.facts.some(fact => !fact.revealed) ? "allFactButton quizButton" : "irrelevantButton quizButton"}
         onClick={revealAllFacts}>reveal all items</button>
       <button className="resetButton quizButton" onClick={resetFacts}>reset list</button>
+
+      <div className="returnFooter">
+        <Link to="/" className="rememboButton">return to list menu</Link>
+      </div>
     </div>
   );
 }

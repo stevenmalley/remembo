@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { addLocalQuiz, modifyLocalQuiz, deleteLocalQuiz, selectLocalQuizzes } from '../store/localQuizzes';
 import { addPrivateQuiz, modifyPrivateQuiz, deletePrivateQuiz } from '../store/privateQuizzes';
@@ -117,22 +117,30 @@ function QuizBuilder() {
   }
 
   return (
-    <form onSubmit={handleSubmit}>
-      <button onClick={deleteThisQuiz} className="rememboButton buildQuizTopButton" type="button">DELETE LIST</button>
-      <button onClick={playThisQuiz} disabled={changed} style={{background:changed ? "grey" : ""}} className="rememboButton buildQuizTopButton" type="button">PLAY LIST</button>
-      <br />
-      <label htmlFor="quizBuilderTitle" className="mainLabel">List Title:</label>
-      <input type="text" id="quizBuilderTitle" onChange={changeHandler} value={quiz.data.name} required />
-      <br />
-      <label htmlFor="quizBuilderDescription" className="mainLabel">Description:</label>
-      <input type="text" id="quizBuilderDescription" onChange={changeHandler} value={quiz.data.description} />
-      <div id="items">
-        <h3>Items:</h3>
-        {quiz.facts.map((item,i) => <QuizBuilderItem key={"quizBuilderItem"+i} id={i} item={item} changeHandler={changeHandler} deleteItem={deleteItem} />)}
+    <div>
+      <form onSubmit={handleSubmit}>
+        <button onClick={() => window.confirm("Are you sure you want to delete this list?")? deleteThisQuiz() : null} className="rememboButton buildQuizTopButton"
+          type="button">DELETE LIST</button>
+        <button onClick={playThisQuiz} disabled={changed} className="rememboButton buildQuizTopButton conditionalButton"
+          type="button">PLAY LIST</button>
+        <br />
+        <label htmlFor="quizBuilderTitle" className="mainLabel">List Title:</label>
+        <input type="text" id="quizBuilderTitle" onChange={changeHandler} value={quiz.data.name} required />
+        <br />
+        <label htmlFor="quizBuilderDescription" className="mainLabel">Description:</label>
+        <input type="text" id="quizBuilderDescription" onChange={changeHandler} value={quiz.data.description} />
+        <div id="items">
+          <h3>Items:</h3>
+          {quiz.facts.map((item,i) => <QuizBuilderItem key={"quizBuilderItem"+i} id={i} item={item} changeHandler={changeHandler} deleteItem={deleteItem} />)}
+        </div>
+        <button onClick={newFactInput} type="button" className="rememboButton">new item</button>
+        <button type="submit" className="rememboButton conditionalButton saveButton" disabled={!changed}>save</button>
+      </form>
+
+      <div className="returnFooter">
+        <Link to="/" className="rememboButton">return to list menu</Link>
       </div>
-      <button onClick={newFactInput} type="button" className="rememboButton">new item</button>
-      <button type="submit" className="rememboButton" style={{background:changed ? "red" : "grey"}} disabled={!changed}>SAVE</button>
-    </form>
+  </div>
   );
 }
 

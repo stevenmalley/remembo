@@ -27,6 +27,10 @@
   max-width: 300px;
 }
 
-.quizLink:hover, .newQuizLink:hover {
+.newQuizLink:hover {
+  background-color: #fff2b9;
+}
+
+.quizLink:hover {
   background: linear-gradient(#d7c669, #ffea8e 5%, #cbb340 95%, #978c51);
 }

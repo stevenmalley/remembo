@@ -16,3 +16,18 @@
 .buildQuizTopButton {
   margin: 10px 25px;
 }
+
+
+.conditionalButton:disabled {
+  background: rgb(151, 151, 151);
+  color: black;
+  cursor: not-allowed;
+}
+
+.rememboButton.saveButton:not(:disabled) {
+  background: red;
+  color: white;
+}
+.rememboButton:hover.saveButton:not(:disabled):hover {
+  background: rgb(202, 0, 0)
+}

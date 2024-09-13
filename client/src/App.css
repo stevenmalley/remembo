@@ -7,7 +7,7 @@ a {
 }
 
 #rememboHeader {
-  background: linear-gradient(#d7c669, #fff2b9 5%, #c5b56a 95%, #978c51);
+  background: linear-gradient(#d7c669, #fff2b9 5%, #dbca76 95%, #978c51);
   color: rgb(6, 100, 92);
   text-decoration: none;
   padding: 15px 0;
@@ -28,11 +28,11 @@ a {
   padding: 10px 20px;
   border-radius: 10px;
   background: #d0d0d0;
-  border-width: 1;
-  border-color: #aaa
+  border: 1px solid #999;
+  margin: 0 10px 10px;
+  cursor: pointer;
 }
 
 .rememboButton:hover:not(:disabled) {
-  color: gold;
-  background: #666;
+  background: #c0c0c0;
 }

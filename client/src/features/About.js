@@ -10,7 +10,7 @@ export default function About() {
       <p>&nbsp;</p>
       <p>You can create lists without logging in, but they will only be saved on your device. Creating an account and logging in will save your lists securely, so you can retrieve them from any device in the future.</p>
       <p>&nbsp;</p>
-      <Link to="/" className="aboutLink">RETURN</Link>
+      <Link to="/" className="aboutLink rememboButton">return</Link>
     </div>
   );
 }
