@@ -1,0 +1,11 @@
+.loginForm {
+  margin-top: 30px;
+}
+
+.loginForm input[type="text"] {
+  height: 30px;
+  margin-bottom: 20px;
+  border: 1px solid grey;
+  border-radius: 15px;
+  padding: 4px;
+}
