@@ -112,6 +112,8 @@ function Quiz () {
           <button className="resetButton quizButton" onClick={resetFacts}>reset list</button>
         </div> : "quiz not found"}
 
+      <p className="listInstructions">Press the 'N' key or click to reveal each item.<br />Press the 'H' key to show the next hint.<br />Press the 'R' key to reveal all facts or reset the list.</p>
+
       <div>
         <Link to="/" className="rememboButton">return to list menu</Link>
       </div>

@@ -6,7 +6,8 @@ export default function About() {
     <div>
       <p>REMEMbO is a tool that can help you memorise lists of information.</p>
       <p>Create a list, add hints or supplementary information, and test yourself.</p>
-      <p>It's a learning tool, not a competition, so you can always click to reveal each item.</p>
+      <p>Try to predict each item; click to reveal each one or press the 'N' key.</p>
+      <p>It's a learning tool, not a competition, so you can always reveal each item.</p>
       <p>&nbsp;</p>
       <p>You can create lists without logging in, but they will only be saved on your device. Creating an account and logging in will save your lists securely, so you can retrieve them from any device in the future.</p>
       <p>&nbsp;</p>

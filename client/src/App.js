@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, NavLink } from "react-router-dom";
 import { configureStore, combineReducers } from '@reduxjs/toolkit';
 import { Provider } from "react-redux";
@@ -22,6 +23,43 @@ function App() {
       auth:auth.reducer
     })
   });
+  
+  useEffect(() => {
+    window.removeEventListener("keypress",revealNextFact); // guarantee only one instance of the event listener exists
+    window.addEventListener("keypress",revealNextFact);
+  },[]);
+  function revealNextFact(e) {
+    // create this function here and pass as a prop so that removeEventListener will work
+    if (e.code == "KeyN" && e.target.tagName !== "INPUT" && e.target.type !== "text") {
+      // press N to reveal the next fact
+      e.preventDefault();
+      
+      let nextFact = document.querySelector(".factWrapper:not(.factRevealed) .textWrapper");
+      if (nextFact) {
+        window.scrollTo(0,window.scrollY+nextFact.getBoundingClientRect().top-(window.innerHeight/2));
+        nextFact.click();
+      }
+    }
+
+    else if (e.code == "KeyH" && e.target.tagName !== "INPUT" && e.target.type !== "text") {
+      // press H to reveal the next hint
+      e.preventDefault();
+      
+      let nextFact = document.querySelector(".hintButton");
+      if (nextFact) {
+        window.scrollTo(0,window.scrollY+nextFact.getBoundingClientRect().top-(window.innerHeight/2));
+        nextFact.click();
+      }
+    }
+
+    else if (e.code == "KeyR" && e.target.tagName !== "INPUT" && e.target.type !== "text") {
+      // press R to reset the list
+      e.preventDefault();
+      let revealButton = document.querySelector(".allFactButton");
+      if (revealButton) revealButton.click();
+      else document.querySelector(".resetButton").click();
+    }
+  }
   
   return (
     <div className="App">
