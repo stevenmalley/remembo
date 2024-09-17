@@ -4,7 +4,6 @@ import { Provider } from "react-redux";
 import localQuizzes from './store/localQuizzes';
 import privateQuizzes from './store/privateQuizzes';
 import auth from './store/auth';
-import LocalQuizProvider from './features/LocalQuizProvider';
 import AccountBar from './features/AccountBar';
 import About from './features/About';
 import Quizzes from './features/Quizzes';

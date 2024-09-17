@@ -7,12 +7,13 @@ module.exports = pool => ({
 
   async getPrivateQuizzes(username){
     const ownerResponse = await pool.query(`SELECT id FROM users WHERE username = '${username}'`);
-    const response = await pool.query(`SELECT * FROM quizzes WHERE public = FALSE AND owner = ${ownerResponse.rows[0].id}`);
+    const response = await pool.query(`SELECT id, name, description FROM quizzes WHERE public = FALSE AND owner = ${ownerResponse.rows[0].id}`);
     return response.rows;
   },
 
   async getQuiz(id) {
     const quizResponse = await pool.query(`SELECT * FROM quizzes WHERE id = ${id}`);
+    if (quizResponse.rows.length === 0) return {notFound:true};
     const ownerResponse = await pool.query(`SELECT username FROM users WHERE id = ${quizResponse.rows[0].owner}`);
     const factResponse = await pool.query(`SELECT * FROM facts WHERE quiz_id = ${id}`);
     return {

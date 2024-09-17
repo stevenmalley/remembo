@@ -6,11 +6,11 @@ const auth = createSlice({
   initialState: {login:false},
   reducers: {
     login:(slice,action)=>{
-      localStorage.setItem("rememoUsername",action.payload);
+      localStorage.setItem("rememboUsername",action.payload);
       return {login:true,username:action.payload};
     },
     logout:(slice,action)=>{
-      localStorage.removeItem("rememoUsername");
+      localStorage.removeItem("rememboUsername");
       return {login:false}
     }
   }
@@ -19,26 +19,27 @@ const auth = createSlice({
 
 export function login(username,password) {
   return async (dispatch, getState) => {
-    const response = await fetcher("/login",
-      {method: "POST", credentials:"include", headers: {"Content-Type":"application/json", "Connection": "keep-alive"}, body:JSON.stringify({username,password})});
+    const response = await fetcher("/login","POST",{username,password});
     const jsonResponse = await response.json();
     if (jsonResponse.message === "AUTHENTICATED") {
       dispatch({type:"auth/login",payload:jsonResponse.username});
     } else {
       dispatch({type:"auth/logout"});
+      dispatch({type:"privateQuizzes/clearPrivateQuizzes"});
     }
   }
 }
 
 export function checkLogin(username) {
   return async (dispatch, getState) => {
-    const response = await fetcher("/checkLogin",
-      {method: "POST", credentials:"include", headers: {"Content-Type":"application/json", "Connection": "keep-alive"}, body:JSON.stringify({username})});
+    const response = await fetcher("/checkLogin","POST",{username});
     const jsonResponse = await response.json();
     if (jsonResponse.message === "AUTHENTICATED") {
       dispatch({type:"auth/login",payload:jsonResponse.username});
     } else {
       dispatch({type:"auth/logout"});
+      dispatch({type:"privateQuizzes/clearPrivateQuizzes"});
+      alert("You have been logged out. If you have made unsaved changes to a list, the new version will have been duplicated and saved to your device.");
     }
     return jsonResponse;
   }
@@ -46,29 +47,28 @@ export function checkLogin(username) {
 
 export function register(username,password) {
   return async (dispatch, getState) => {
-    const response = await fetcher("/register",
-      {method: "POST", credentials:"include", headers: {"Content-Type":"application/json", "Connection": "keep-alive"}, body:JSON.stringify({username,password})});
+    const response = await fetcher("/register","POST",{username,password});
     const jsonResponse = await response.json();
     if (jsonResponse.message === "AUTHENTICATED") {
       dispatch({type:"auth/login",payload:jsonResponse.username});
     } else {
       dispatch({type:"auth/logout"});
+      dispatch({type:"privateQuizzes/clearPrivateQuizzes"});
     }
   }
 }
 
 export function logout() {
   return async (dispatch, getState) => {
-    await fetcher("/logout",
-      {method: "GET", credentials:"include", headers: {"Content-Type":"application/json", "Connection": "keep-alive"}});
+    await fetcher("/logout","GET");
     dispatch({type:"auth/logout"});
+    dispatch({type:"privateQuizzes/clearPrivateQuizzes"});
   }
 }
 
 export function regen() {
   return async (dispatch, getState) => {
-    return await fetcher("/regen",
-      {method: "POST", credentials:"include", headers: {"Content-Type":"application/json", "Connection": "keep-alive"}});
+    return await fetcher("/regen","POST");
   }
 }
 

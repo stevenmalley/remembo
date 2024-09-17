@@ -33,7 +33,10 @@ const session = require("express-session");
 app.use(
   session({
     secret: process.env.EXPRESS_SECRET,
-    cookie: {maxAge: 5*60*1000, // 5 minutes
+    cookie: {
+      //maxAge: 6000, // 6 seconds
+      //maxAge: 5*60*1000, // 5 minutes
+      maxAge: 10*24*60*60*1000, // 10 days
 			secure:false,
 			httpOnly:false},
     resave: false,
@@ -104,8 +107,9 @@ app.get("/api/quiz/:quizID",
   async (req,res,next) => {
     if (validator.isInt(req.params.quizID)) {
       const quiz = await db.getQuiz(req.params.quizID);
-      if (quiz.data.public || (req.user && quiz.data.owner === req.user.username)) res.status(200).send(quiz);
-      else res.status(400).send({message:"private quiz"});
+      if (quiz.notFound) res.status(200).send({message:"quiz not found"});
+      else if (quiz.data.public || (req.user && quiz.data.owner === req.user.username)) res.status(200).send(quiz);
+      else res.status(200).send({message:"private quiz"});
     }
   }
 );
@@ -179,7 +183,7 @@ app.put("/api/unpublishQuiz/:quizID", // move public quiz to private, no body
 
 
 app.get("/api/loginFail",
-  (req,res,next) => {res.status(400).send({message:"NOT AUTHENTICATED"})}
+  (req,res,next) => {res.status(200).send({message:"NOT AUTHENTICATED"})}
 );
 
 app.post("/api/login",
@@ -205,13 +209,17 @@ app.post("/api/checkLogin",
   authenticate,
   (req,res,next) => {
     if (req.body.username === req.user.username) {
+      req.body = req.user;
       return next();
     } else {
       req.logout(null,()=>{});
       res.redirect("/api/loginFail");
     }
   },
-  (req,res,next) => {res.status(200).send({message:"AUTHENTICATED",username:req.user.username})}
+  passport.authenticate("local", {failureRedirect: "/api/loginFail"}),
+  (req,res,next) => {
+    res.status(200).send({message:"AUTHENTICATED",username:req.user.username})
+  }
 );
 
 app.get("/api/logout",

@@ -15,7 +15,7 @@ function Quizzes() {
 
   useEffect(()=>{
     async function getQuizzes() {
-      const response = await fetcher("/quizzes");
+      const response = await fetcher("/quizzes","GET");
       const jsonResponse = await response.json();
       setPublicQuizzes(jsonResponse);
     }
@@ -27,7 +27,7 @@ function Quizzes() {
       <div><Link to="about/" className="rememboButton">about</Link></div>
       <div id="publicLists">
         <h2 className="quizzesHeader">Public Lists</h2>
-        {publicQuizzes.map(quiz => (
+        {publicQuizzes.length === 0 ? "Loading public lists..." : publicQuizzes.map(quiz => (
           <Link key={"quiz"+quiz.id} to={"quiz/"+quiz.id} className="quizLink">{quiz.name}</Link>
         ))}
       </div>

@@ -9,10 +9,10 @@
 
 .AccountBar button, .AccountBar a {
   color: #333;
-  background: linear-gradient(13deg, #ebd7a1, white);
+  background: linear-gradient(13deg, #e5d273, white);
   border-bottom-left-radius: 10px;
   border-bottom-right-radius: 10px;
-  padding: 5px 10px 5px;
+  padding: 5px 0;
   border: 1px solid #ccc;
   border-top-width: 0;
   font-family: unset;
@@ -20,9 +20,10 @@
   display: inline-block;
   margin: 0 20px;
   cursor: pointer;
+  width: 90px;
 }
 .AccountBar button:hover, .AccountBar a:hover {
-  background: linear-gradient(13deg, #f1ce6d, #f8f7ce);
+  background: linear-gradient(13deg, #dfc440, #fcfaf0);
 }
 
 a {

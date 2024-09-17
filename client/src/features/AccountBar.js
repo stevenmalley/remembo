@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { NavLink, useNavigate } from "react-router-dom";
-import { logout, selectAuth, checkLogin, regen } from '../store/auth';
+import { logout, selectAuth, login, checkLogin, regen } from '../store/auth';
 import { selectLocalQuizzes, loadLocalQuizzes, deleteLocalQuizzes } from '../store/localQuizzes';
 import { clearPrivateQuizzes, selectPrivateQuizzes, uploadLocalQuizzes, retrievePrivateQuizzes } from '../store/privateQuizzes';
 
@@ -17,8 +17,8 @@ export default function AccountBar() {
     if (localQuizzes.length === 0) {
       dispatch(loadLocalQuizzes());
     }
-    if (!auth.login && localStorage.getItem("rememoUsername")) {
-      dispatch(checkLogin(localStorage.getItem("rememoUsername")));
+    if (!auth.login && localStorage.getItem("rememboUsername")) {
+      dispatch(checkLogin(localStorage.getItem("rememboUsername")));
     }
   },[]);
 
@@ -38,7 +38,7 @@ export default function AccountBar() {
   },[auth]);
   
   function handleLogout() {
-    dispatch(clearPrivateQuizzes());
+    //dispatch(clearPrivateQuizzes()); now handled by logout()
     dispatch(logout());
     navigate("/");
   }

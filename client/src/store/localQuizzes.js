@@ -5,7 +5,7 @@ const localQuizzes = createSlice({
   initialState: [],
   reducers: {
     addQuiz:(slice,action)=>{slice.push(action.payload)},
-    modifyQuiz:(slice,action)=>{slice[action.payload.index] = action.payload.quiz},
+    modifyQuiz:(slice,action)=>{console.log(action.payload);slice[action.payload.index] = action.payload.quiz},
     deleteQuiz:(slice,action)=>{slice.splice(action.payload,1)},
     deleteAllQuizzes:(slice,action)=>[],
     loadLocalQuizzes:(slice,action)=>{

@@ -10,23 +10,24 @@
 
 .rememboButton.quizTopButton {
   margin: 10px 25px;
-  background-color: #ffd1d1;
+  background-color: #b5f9ff;
   cursor: pointer;
 }
 .rememboButton:hover.quizTopButton:hover {
-  background-color: #ffc4c4;
+  background-color: #94f6ff;
 }
 
 .factWrapper {
   background-color: rgb(0, 131, 120);
-  border: 1px solid #444;
-  margin: 10px auto;
+  border: 1px solid #3b3b3b;
   border-radius: 10px;
-  box-shadow: 2px 2px 1px 1px grey;
-  max-width: 500px;
-  color: black;
-  position: relative;
+  box-shadow: 1px 2px 1px 1px #616161;
+  color: #000;
   cursor: pointer;
+  margin: 10px auto;
+  max-width: 500px;
+  position: relative;
+  transition: background-color 0.5s;
 }
 
 .factWrapper:hover {
@@ -35,6 +36,8 @@
 
 .factWrapper.factRevealed {
   background-color: white;
+  border: 1px solid #7d7d7d;
+  box-shadow: 1px 2px 1px 1px #a7a7a7;
 }
 
 .textWrapper {
@@ -43,6 +46,13 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
+}
+
+.fact-info, .fact-text {
+  visibility: hidden;
+}
+.factRevealed .fact-info, .factRevealed .fact-text {
+  visibility: visible;
 }
 
 .fact-info {

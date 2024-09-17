@@ -3,7 +3,7 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { addLocalQuiz, modifyLocalQuiz, deleteLocalQuiz, selectLocalQuizzes } from '../store/localQuizzes';
 import { addPrivateQuiz, modifyPrivateQuiz, deletePrivateQuiz } from '../store/privateQuizzes';
-import { selectAuth } from '../store/auth';
+import { selectAuth, checkLogin } from '../store/auth';
 import QuizBuilderItem from './QuizBuilderItem';
 import fetcher from '../fetcher';
 import './QuizBuilder.css';
@@ -21,8 +21,7 @@ function QuizBuilder() {
   const [ changed, setChanged ] = useState(false);
 
   async function getQuiz() {
-    const response = await fetcher("/quiz/"+quizID,
-      {method: "GET", credentials:"include", headers: {"Content-Type":"application/json", "Connection": "keep-alive"}}); // send cookie when retrieving a private quiz
+    const response = await fetcher("/quiz/"+quizID,"GET");
     const jsonResponse = await response.json();
     if (jsonResponse.message !== "private quiz") setQuiz(jsonResponse);
   }
@@ -33,7 +32,7 @@ function QuizBuilder() {
         getQuiz();
       }
     } else if (localQuizzes[localID]) setQuiz(localQuizzes[localID]);
-  },[auth,localQuizzes]);
+  },[localQuizzes]);
 
   function changeHandler(e) {
     if (!changed) setChanged(true);
@@ -63,7 +62,9 @@ function QuizBuilder() {
     setChanged(false);
     
     if (quiz.data.name && quiz.facts.length > 0 && quiz.facts.every(fact => fact.text)) {
-      if (auth.login) {
+      let loginCheck;
+      if (auth.login) loginCheck = await dispatch(checkLogin(auth.username));
+      if (auth.login && auth.username && loginCheck.message === "AUTHENTICATED") {
         if (quizID === undefined) { // logged in; new and unsaved quiz
           const newQuizID = await dispatch(addPrivateQuiz(quiz));
           setQuiz({...quiz,data:{...quiz.data,id:newQuizID}});
@@ -72,10 +73,11 @@ function QuizBuilder() {
           dispatch(modifyPrivateQuiz(quiz));
         }
       } else {
-        if (localID === undefined) { // not logged in; new and unsaved quiz
+        // not logged in, saving locally
+        if (localID === undefined) { // new and unsaved quiz
           dispatch(addLocalQuiz(quiz));
           navigate("/buildQuiz/local/"+(JSON.parse(localStorage.getItem("localQuizzes")).length-1));
-        } else { // not logged in; modifying a locally saved quiz
+        } else { // modifying a locally saved quiz
           dispatch(modifyLocalQuiz({index:localID,quiz:quiz}));
         }
       }
@@ -84,7 +86,7 @@ function QuizBuilder() {
 
   async function saveQuiz() {
     const newQuiz = {
-      data: {id: quizID, // undefined for local quizzes, value provided by server for private quizzes
+      data: {id: Number(quizID), // undefined for local quizzes, value provided by server for private quizzes
             name: document.getElementById("quizBuilderTitle").value,
             description: document.getElementById("quizBuilderDescription").value,
             owner: quiz.data.owner},
@@ -119,7 +121,7 @@ function QuizBuilder() {
   return (
     <div>
       <form onSubmit={handleSubmit}>
-        <button onClick={() => window.confirm("Are you sure you want to delete this list?")? deleteThisQuiz() : null} className="rememboButton buildQuizTopButton"
+        <button onClick={e => window.confirm("Are you sure you want to delete this list?")? deleteThisQuiz(e) : null} className="rememboButton buildQuizTopButton"
           type="button">DELETE LIST</button>
         <button onClick={playThisQuiz} disabled={changed} className="rememboButton buildQuizTopButton conditionalButton"
           type="button">PLAY LIST</button>
