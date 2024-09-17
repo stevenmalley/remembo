@@ -39,7 +39,7 @@ export function checkLogin(username) {
     } else {
       dispatch({type:"auth/logout"});
       dispatch({type:"privateQuizzes/clearPrivateQuizzes"});
-      alert("You have been logged out. If you have made unsaved changes to a list, the new version will have been duplicated and saved to your device.");
+      alert("You have been logged out.");
     }
     return jsonResponse;
   }

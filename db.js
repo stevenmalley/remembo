@@ -15,7 +15,7 @@ module.exports = pool => ({
     const quizResponse = await pool.query(`SELECT * FROM quizzes WHERE id = ${id}`);
     if (quizResponse.rows.length === 0) return {notFound:true};
     const ownerResponse = await pool.query(`SELECT username FROM users WHERE id = ${quizResponse.rows[0].owner}`);
-    const factResponse = await pool.query(`SELECT * FROM facts WHERE quiz_id = ${id}`);
+    const factResponse = await pool.query(`SELECT * FROM facts WHERE quiz_id = ${id} ORDER BY order_number`);
     return {
       data:{...quizResponse.rows[0],owner:ownerResponse.rows[0].username}, // replace owner id with owner name
       facts:factResponse.rows
