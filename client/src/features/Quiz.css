@@ -12,6 +12,11 @@
   font-size: 0.9em;
   color: #444;
 }
+@media screen and (max-width: 799px) {
+  .listInstructions {
+    display: none;
+  }
+}
 
 .rememboButton.quizTopButton {
   margin: 10px 25px;
