@@ -22,6 +22,10 @@
   background-color: #94f6ff;
 }
 
+.QuizContainer {
+  padding: 0 1%;
+}
+
 .factWrapper {
   background-color: rgb(0, 131, 120);
   border: 1px solid #3b3b3b;

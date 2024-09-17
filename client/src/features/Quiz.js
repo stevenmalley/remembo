@@ -93,16 +93,18 @@ function Quiz () {
       {(auth.login && (quiz.data.owner === auth.username)) ?
         (quiz.data.public ? <button onClick={unpublishThisQuiz} className="rememboButton quizTopButton">MAKE LIST PRIVATE<br />(allows editing)</button> : <button onClick={publishThisQuiz} className="rememboButton quizTopButton">MAKE LIST PUBLIC</button>)
         : null}
-      {quiz.facts.map((fact,i) => (
-        <div key={"fact"+i} id={"fact"+i} className={"factWrapper "+(fact.revealed ? "factRevealed" : "")}>
-          <div onClick={factClickHandler(i)} className="textWrapper">
-            <div className="fact-text">{fact.text}</div>
-            <div className="fact-info">{fact.info}</div>
-            {!fact.revealed && fact.hint && fact.hintDisplayed ? <div className="fact-hint">{fact.hint}</div> : null}
+      <div className="QuizContainer">
+        {quiz.facts.map((fact,i) => (
+          <div key={"fact"+i} id={"fact"+i} className={"factWrapper "+(fact.revealed ? "factRevealed" : "")}>
+            <div onClick={factClickHandler(i)} className="textWrapper">
+              <div className="fact-text">{fact.text}</div>
+              <div className="fact-info">{fact.info}</div>
+              {!fact.revealed && fact.hint && fact.hintDisplayed ? <div className="fact-hint">{fact.hint}</div> : null}
+            </div>
+            {!fact.revealed && fact.hint && !fact.hintDisplayed ? <button className="hintButton" onClick={hintClickHandler(i)}>hint</button> : null }
           </div>
-          {!fact.revealed && fact.hint && !fact.hintDisplayed ? <button className="hintButton" onClick={hintClickHandler(i)}>hint</button> : null }
-        </div>
-      ))}
+        ))}
+      </div>
 
       {quiz.facts.length > 0 ? <div>
           <button className={quiz.facts.some(fact => !fact.revealed && fact.hint && !fact.hintDisplayed) ? "allHintButton quizButton" : "irrelevantButton quizButton"}

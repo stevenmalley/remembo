@@ -7,6 +7,10 @@
   margin: 55px 0 5px 0;
 }
 
+#publicLists, #localOrPrivateLists {
+  padding: 0 1%;
+}
+
 .quizLink, .newQuizLink {
   display: block;
   color: black;
