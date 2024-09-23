@@ -41,7 +41,9 @@
   margin: 10px auto;
   max-width: 500px;
   position: relative;
-  transition: background-color 0.3s;
+  height: 50px;
+  overflow-y: hidden;
+  transition: background-color 0.3s, height 0.5s;
 }
 
 .factWrapper:hover {
@@ -70,7 +72,7 @@
 }
 
 .fact-info {
-  color: #777;
+  color: #555;
 }
 
 .fact-hint {

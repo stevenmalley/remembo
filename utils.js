@@ -26,7 +26,8 @@ function quizUnescaped(quiz) {
       id: quiz.data.id,
       name: validator.unescape(quiz.data.name),
       description: validator.unescape(quiz.data.description),
-      owner: validator.unescape(quiz.data.owner)
+      owner: validator.unescape(quiz.data.owner),
+      public: quiz.data.public
     },
     facts: quiz.facts.map(fact => ({
       text: validator.unescape(fact.text),

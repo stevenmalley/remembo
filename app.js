@@ -79,7 +79,7 @@ function authenticateAdmin(req,res,next) {
 
 
 
-app.use(express.static("client/build"));
+//app.use(express.static("client/build"));
 
 app.use("/api",
   (req,res,next)=>{
@@ -129,12 +129,18 @@ app.put("/api/quiz/:quizID", // modify saved quiz, receives {quiz}
   authenticate,
   async (req,res,next) => {
     if (validator.isInt(req.params.quizID)) {
-      const confirmed = await db.confirmOwnership(req.user.username,req.params.quizID);
-      if (confirmed) {
-        const quiz = quizEscaped(req.body);
-        if (req.params.quizID === String(quiz.data.id) && quizValid(quiz)) {
-          await db.modifyQuiz(quiz);
-          res.status(200).send({message:"quiz modified"});
+
+      // check that quiz is private (public quizzes cannot be modified)
+      const old_quiz = await db.getQuiz(req.params.quizID);
+      if (!old_quiz.data.public) {
+
+        const confirmed = await db.confirmOwnership(req.user.username,req.params.quizID);
+        if (confirmed) {
+          const quiz = quizEscaped(req.body);
+          if (req.params.quizID === String(quiz.data.id) && quizValid(quiz)) {
+            await db.modifyQuiz(quiz);
+            res.status(200).send({message:"quiz modified"});
+          }
         }
       }
     }

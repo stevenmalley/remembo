@@ -83,6 +83,19 @@ function Quiz () {
     setQuiz({...quiz,data:{...quiz.data,public:false}});
   }
 
+  useEffect(()=>{
+    // expand any revealed facts according to the size of the text and info
+    for (const fact of document.querySelectorAll(".factWrapper")) {
+      if (fact.classList.contains("factRevealed")) {
+        let textHeight = fact.getElementsByClassName("fact-text")[0].getBoundingClientRect().height;
+        let infoHeight = fact.getElementsByClassName("fact-info")[0].getBoundingClientRect().height;
+        fact.style = "height: "+(Math.max(50,textHeight+infoHeight))+"px";
+      } else {
+        fact.style = "";
+      }
+    }
+  });
+
   return (
     <div id="quiz">
       <h3>{quiz.data.name}</h3>
@@ -97,8 +110,8 @@ function Quiz () {
         {quiz.facts.map((fact,i) => (
           <div key={"fact"+i} id={"fact"+i} className={"factWrapper "+(fact.revealed ? "factRevealed" : "")}>
             <div onClick={factClickHandler(i)} className="textWrapper">
-              <div className="fact-text">{fact.text}</div>
-              <div className="fact-info">{fact.info}</div>
+              <div className="fact-text">{fact.revealed ? fact.text : null}</div>
+              <div className="fact-info">{fact.revealed ? fact.info : null}</div>
               {!fact.revealed && fact.hint && fact.hintDisplayed ? <div className="fact-hint">{fact.hint}</div> : null}
             </div>
             {!fact.revealed && fact.hint && !fact.hintDisplayed ? <button className="hintButton" onClick={hintClickHandler(i)}>hint</button> : null }
