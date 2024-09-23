@@ -14,7 +14,7 @@ const bodyParser = require("body-parser");
 app.use(bodyParser.json());
 
 const validator = require("validator");
-const { quizValid, quizEscaped } = require("./utils");
+const { quizValid, quizEscaped, quizUnescaped } = require("./utils");
 
 const cors = require("cors");
 const whitelist = [undefined,'http://localhost:3000','http://localhost:8080','http://remembo.herokuapp.com','https://remembo.herokuapp.com'];
@@ -108,7 +108,7 @@ app.get("/api/quiz/:quizID",
     if (validator.isInt(req.params.quizID)) {
       const quiz = await db.getQuiz(req.params.quizID);
       if (quiz.notFound) res.status(200).send({message:"quiz not found"});
-      else if (quiz.data.public || (req.user && quiz.data.owner === req.user.username)) res.status(200).send(quiz);
+      else if (quiz.data.public || (req.user && quiz.data.owner === req.user.username)) res.status(200).send(quizUnescaped(quiz));
       else res.status(200).send({message:"private quiz"});
     }
   }
