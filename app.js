@@ -81,7 +81,7 @@ function authenticateAdmin(req,res,next) {
 
 
 app.use(express.static("client/build"));
-if (process.env.DEVELOPMENT !== "true") app.get('*', (req, res) => res.sendFile(path.resolve('build', 'index.html')));
+if (process.env.DEVELOPMENT !== "true") app.get(/^((?!api).)*$/, (req, res) => res.sendFile(path.resolve('build', 'index.html')));
 
 
 app.use("/api",
