@@ -89,7 +89,7 @@ function Quiz () {
       if (fact.classList.contains("factRevealed")) {
         let textHeight = fact.getElementsByClassName("fact-text")[0].getBoundingClientRect().height;
         let infoHeight = fact.getElementsByClassName("fact-info")[0].getBoundingClientRect().height;
-        fact.style = "height: "+(Math.max(50,textHeight+infoHeight))+"px";
+        fact.style = "height: "+(Math.max(50,textHeight+infoHeight+3))+"px";
       } else {
         fact.style = "";
       }
