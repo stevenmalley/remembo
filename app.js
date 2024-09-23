@@ -1,4 +1,5 @@
 const express = require("express");
+const path = require('path');
 const app = express();
 
 const dotenv = require("dotenv");
@@ -80,6 +81,8 @@ function authenticateAdmin(req,res,next) {
 
 
 app.use(express.static("client/build"));
+if (process.env.DEVELOPMENT !== "true") app.get('*', (req, res) => res.sendFile(path.resolve('build', 'index.html')));
+
 
 app.use("/api",
   (req,res,next)=>{
