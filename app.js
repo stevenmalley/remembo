@@ -79,7 +79,7 @@ function authenticateAdmin(req,res,next) {
 
 
 
-//app.use(express.static("client/build"));
+app.use(express.static("client/build"));
 
 app.use("/api",
   (req,res,next)=>{
