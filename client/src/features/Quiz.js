@@ -108,7 +108,7 @@ function Quiz () {
         : null}
       <div className="QuizContainer">
         {quiz.facts.map((fact,i) => (
-          <div key={"fact"+i} id={"fact"+i} className={"factWrapper "+(fact.revealed ? "factRevealed" : "")}>
+          <div key={"fact"+i} id={"fact"+i} className={"factWrapper "+(fact.revealed ? "factRevealed" : "")+(fact.hintDisplayed? " hintRevealed": "")}>
             <div onClick={factClickHandler(i)} className="textWrapper">
               <div className="fact-text">{fact.revealed ? fact.text : null}</div>
               <div className="fact-info">{fact.revealed ? fact.info : null}</div>
