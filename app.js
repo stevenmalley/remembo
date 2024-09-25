@@ -81,7 +81,14 @@ function authenticateAdmin(req,res,next) {
 
 
 app.use(express.static("client/build"));
-if (process.env.DEVELOPMENT !== "true") app.get(/^((?!api).)*$/, (req, res) => res.sendFile(path.resolve('index.html')));
+if (process.env.DEVELOPMENT !== "true") {
+  app.get(/^((?!api).)*$/, // any path except those with "api", redirect to index.html for React Router to handle
+    (req, res) => {
+      console.log("redirecting to "+path.resolve('index.html'));
+      res.sendFile(path.resolve('index.html'))
+    }
+  );
+}
 
 
 app.use("/api",
