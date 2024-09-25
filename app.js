@@ -82,10 +82,10 @@ function authenticateAdmin(req,res,next) {
 
 app.use(express.static("client/build"));
 if (process.env.DEVELOPMENT !== "true") {
-  app.get(/^((?!api).)*$/, // any path except those with "api", redirect to index.html for React Router to handle
+  app.get(/^((?!^\/api\/).)*$/, // any path except those beginning with "/api/", redirect to index.html for React Router to handle
     (req, res) => {
-      console.log("redirecting to "+path.join(__dirname));
-      res.sendFile(path.join(__dirname));
+      console.log("redirecting to "+path.join(__dirname, 'build/index.html'));
+      res.sendFile(path.join(__dirname, 'build/index.html'));
     }
   );
 }
