@@ -86,7 +86,7 @@ if (process.env.DEVELOPMENT !== "true") {
     (req, res) => {
       console.log("redirecting to remembo.herokuapp.com");
       //res.sendFile(path.resolve('index.html'));
-      res.sendFile('https://remembo.herokuapp.com/');
+      res.sendFile('https://remembo.herokuapp.com');
     }
   );
 }
