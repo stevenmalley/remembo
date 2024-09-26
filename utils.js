@@ -37,4 +37,8 @@ function quizUnescaped(quiz) {
   }
 }
 
-module.exports = {quizValid,quizEscaped,quizUnescaped};
+function quizDataUnescaped(quizzesData) {
+  return quizzesData.map(quizData => ({...quizData, name: validator.unescape(quizData.name)}));
+}
+
+module.exports = {quizValid,quizEscaped,quizUnescaped,quizDataUnescaped};

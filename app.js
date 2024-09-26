@@ -15,7 +15,7 @@ const bodyParser = require("body-parser");
 app.use(bodyParser.json());
 
 const validator = require("validator");
-const { quizValid, quizEscaped, quizUnescaped } = require("./utils");
+const { quizValid, quizEscaped, quizUnescaped, quizDataUnescaped } = require("./utils");
 
 const cors = require("cors");
 const whitelist = [undefined,'http://localhost:3000','http://localhost:8080','http://remembo.herokuapp.com','https://remembo.herokuapp.com'];
@@ -84,7 +84,6 @@ app.use(express.static("client/build"));
 if (process.env.DEVELOPMENT !== "true") {
   app.get(/^((?!^\/api\/).)*$/, // any path except those beginning with "/api/", redirect to index.html for React Router to handle
     (req, res) => {
-      console.log("redirecting to "+path.join(__dirname, 'client/build/index.html'));
       res.sendFile(path.join(__dirname, 'client/build/index.html'));
     }
   );
@@ -101,7 +100,8 @@ app.use("/api",
 app.get("/api/quizzes",
   async (req,res,next) => {
     const quizzes = await db.getQuizzes();
-    res.status(200).send(quizzes);
+    const unescapedQuizzes = quizDataUnescaped(quizzes);
+    res.status(200).send(unescapedQuizzes);
   }
 );
 
@@ -109,7 +109,8 @@ app.post("/api/privateQuizzes", // receives {username}
   authenticate,
   async (req,res,next) => {
     const privateQuizzes = await db.getPrivateQuizzes(req.user.username);
-    res.status(200).send(privateQuizzes);
+    const unescapedPrivateQuizzes = quizDataUnescaped(privateQuizzes);
+    res.status(200).send(unescapedPrivateQuizzes);
   }
 );
 
