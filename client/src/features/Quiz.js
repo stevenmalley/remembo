@@ -8,6 +8,7 @@ import fetcher from '../fetcher';
 import './Quiz.css';
 
 function Quiz () {
+  const [ message, setMessage ] = useState("retrieving quiz data");
   const [ quiz, setQuiz ] = useState({data:{name:"",description:"",owner:""},facts:[]});
   const localQuizzes = useSelector(selectLocalQuizzes);
   const auth = useSelector(selectAuth);
@@ -25,7 +26,8 @@ function Quiz () {
         // if (!(auth.login && auth.username && loginCheck.message === "AUTHENTICATED")) {
           const response = await fetcher("/quiz/"+quizID,"GET");
           const jsonResponse = await response.json();
-          if (jsonResponse.message !== "private quiz" && jsonResponse.message !== "quiz not found") setQuiz(jsonResponse);
+          if (jsonResponse.message) setMessage(jsonResponse.message);
+          else setQuiz(jsonResponse);
         }
       // }
       getQuiz();
@@ -125,7 +127,7 @@ function Quiz () {
           <button className={quiz.facts.some(fact => !fact.revealed) ? "allFactButton quizButton" : "irrelevantButton quizButton"}
             onClick={revealAllFacts}>reveal all items</button>
           <button className="resetButton quizButton" onClick={resetFacts}>reset list</button>
-        </div> : "retrieving list data..."}
+        </div> : message}
 
       <p className="listInstructions">Press the 'N' key or click to reveal each item.<br />Press the 'H' key to show the next hint.<br />Press the 'R' key to reveal all facts or reset the list.</p>
 
