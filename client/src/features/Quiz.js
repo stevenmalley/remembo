@@ -63,7 +63,7 @@ function Quiz () {
   }
 
   function showAllHints() {
-    setQuiz({...quiz, facts: quiz.facts.map(f => ({...f,hintDisplayed:true}))});
+    setQuiz({...quiz, facts: quiz.facts.map(f => ({...f,hintDisplayed:!f.revealed}))});
   }
 
   function resetFacts() {
@@ -127,9 +127,9 @@ function Quiz () {
           <button className={quiz.facts.some(fact => !fact.revealed) ? "allFactButton quizButton" : "irrelevantButton quizButton"}
             onClick={revealAllFacts}>reveal all items</button>
           <button className="resetButton quizButton" onClick={resetFacts}>reset list</button>
+          <p className="listInstructions">Press the 'N' key or click to reveal each item.<br />Press the 'H' key to show the next hint.<br />Press the 'R' key to reveal all facts or reset the list.</p>
         </div> : message}
 
-      <p className="listInstructions">Press the 'N' key or click to reveal each item.<br />Press the 'H' key to show the next hint.<br />Press the 'R' key to reveal all facts or reset the list.</p>
 
       <div>
         <Link to="/" className="rememboButton">return to list menu</Link>
