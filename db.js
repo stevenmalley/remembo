@@ -1,13 +1,13 @@
 module.exports = pool => ({
 
   async getQuizzes(){
-    const response = await pool.query(`SELECT * FROM quizzes WHERE public = TRUE`);
+    const response = await pool.query(`SELECT * FROM quizzes WHERE public = TRUE ORDER BY name`);
     return response.rows;
   },
 
   async getPrivateQuizzes(username){
     const ownerResponse = await pool.query(`SELECT id FROM users WHERE username = '${username}'`);
-    const response = await pool.query(`SELECT id, name, description FROM quizzes WHERE public = FALSE AND owner = ${ownerResponse.rows[0].id}`);
+    const response = await pool.query(`SELECT id, name, description FROM quizzes WHERE public = FALSE AND owner = ${ownerResponse.rows[0].id} ORDER BY name`);
     return response.rows;
   },
 
