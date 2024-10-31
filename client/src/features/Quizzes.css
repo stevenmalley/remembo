@@ -25,16 +25,15 @@
 .quizLink {
   background: linear-gradient(#d7c669, #fff2b9 5%, #c5b56a 95%, #978c51);
 }
+.quizLink:hover {
+  background: linear-gradient(#d7c669, #ffea8e 5%, #cbb340 95%, #978c51);
+}
 
 .newQuizLink {
   border: 1px solid black;
   max-width: 300px;
+  background: linear-gradient(#eee,#c0c0c0);
 }
-
 .newQuizLink:hover {
-  background-color: #fff2b9;
-}
-
-.quizLink:hover {
-  background: linear-gradient(#d7c669, #ffea8e 5%, #cbb340 95%, #978c51);
+  background: linear-gradient(#ddd,#b0b0b0);
 }

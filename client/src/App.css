@@ -61,3 +61,17 @@ a {
 .rememboButton:hover:not(:disabled) {
   background: #c0c0c0;
 }
+
+
+#buyMeACoffee {
+  margin-top: 20px;
+}
+#buyMeACoffee a {
+  color: #444;
+}
+#buyMeACoffee a:hover {
+  color: #666;
+}
+#buyMeACoffee svg {
+  margin-left: 10px;
+}
