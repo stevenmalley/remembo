@@ -85,6 +85,17 @@ function Quiz () {
     setQuiz({...quiz,data:{...quiz.data,public:false}});
   }
 
+  function factMouseOver(e) {
+    let hoveredFact = document.querySelector(".hoveredFact");
+    if (hoveredFact) hoveredFact.classList.remove("hoveredFact");
+    if (!e.target.classList.contains("hintButton")) e.currentTarget.classList.add("hoveredFact");
+  }
+
+  function factMouseOut(e) {
+    let hoveredFact = document.querySelector(".hoveredFact");
+    if (hoveredFact) hoveredFact.classList.remove("hoveredFact");
+  }
+
   useEffect(()=>{
     // expand any revealed facts according to the size of the text and info
     for (const fact of document.querySelectorAll(".factWrapper")) {
@@ -110,7 +121,8 @@ function Quiz () {
         : null}
       <div className="QuizContainer">
         {quiz.facts.map((fact,i) => (
-          <div key={"fact"+i} id={"fact"+i} className={"factWrapper "+(fact.revealed ? "factRevealed" : "")+(fact.hintDisplayed? " hintRevealed": "")}>
+          <div key={"fact"+i} id={"fact"+i} className={"factWrapper "+(fact.revealed ? "factRevealed" : "")+(fact.hintDisplayed? " hintRevealed": "")}
+            onMouseOver={factMouseOver} onMouseOut={factMouseOut}>
             <div onClick={factClickHandler(i)} className="textWrapper">
               <div className="fact-text">{fact.revealed ? fact.text : null}</div>
               <div className="fact-info">{fact.revealed ? fact.info : null}</div>
